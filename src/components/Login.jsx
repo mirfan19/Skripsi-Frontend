@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import api from "../api/axios";
 
 export default function Login() {
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState(""); // Change to 'username'
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState(""); // State for error message
   const navigate = useNavigate();
@@ -14,12 +14,13 @@ export default function Login() {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const response = await api.post("/auth/login", { email, password });
-      localStorage.setItem("token", response.data.token); // Save token to localStorage
-      navigate("/home"); // Redirect to home page
+      const response = await api.post("/auth/login", { username, password });
+      console.log("Login response:", response);
+      localStorage.setItem("token", response.data.data.token);
+      navigate("/home");
     } catch (error) {
-      // Set error message if login fails
-      setErrorMessage("Email or password is incorrect. Please try again.");
+      console.error("Login error:", error);
+      setErrorMessage("Username or password is incorrect. Please try again.");
     }
   };
 
@@ -56,12 +57,12 @@ export default function Login() {
               </div>
             )}
             <div>
-              <label className="block text-sm">Email Address</label>
+              <label className="block text-sm">Username</label>
               <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="you@example.com"
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                placeholder="Enter your username"
                 className="w-full border p-2 rounded"
                 required
               />
@@ -72,7 +73,7 @@ export default function Login() {
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="********"
+                placeholder="Enter your password"
                 className="w-full border p-2 rounded"
                 required
               />
