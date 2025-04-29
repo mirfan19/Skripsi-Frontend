@@ -1,17 +1,40 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  useLocation,
+} from "react-router-dom";
+import { AnimatePresence } from "framer-motion";
 import Login from "./components/Login";
 import Register from "./components/Register";
-import "./index.css";
+import Home from "./components/Home";
+import ProtectedRoute from "./components/ProtectedRoute";
+
+function AnimatedRoutes() {
+  const location = useLocation();
+
+  return (
+    <AnimatePresence>
+      <Routes location={location} key={location.pathname}>
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route
+          path="/home"
+          element={
+            <ProtectedRoute>
+              <Home />
+            </ProtectedRoute>
+          }
+        />
+      </Routes>
+    </AnimatePresence>
+  );
+}
 
 function App() {
   return (
     <Router>
-      <div className="min-h-screen flex items-center justify-center bg-gray-100">
-        <Routes>
-          <Route path="/" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-        </Routes>
-      </div>
+      <AnimatedRoutes />
     </Router>
   );
 }
