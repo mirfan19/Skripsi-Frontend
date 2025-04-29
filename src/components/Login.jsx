@@ -6,9 +6,10 @@ import { useNavigate } from "react-router-dom";
 import api from "../api/axios";
 
 export default function Login() {
-  const [username, setUsername] = useState(""); // Change to 'username'
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [errorMessage, setErrorMessage] = useState(""); // State for error message
+  const [errorMessage, setErrorMessage] = useState("");
+  const [showPassword, setShowPassword] = useState(false); // State for password visibility
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
@@ -22,6 +23,10 @@ export default function Login() {
       console.error("Login error:", error);
       setErrorMessage("Username or password is incorrect. Please try again.");
     }
+  };
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
   };
 
   return (
@@ -69,14 +74,23 @@ export default function Login() {
             </div>
             <div>
               <label className="block text-sm">Password</label>
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Enter your password"
-                className="w-full border p-2 rounded"
-                required
-              />
+              <div className="relative">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Enter your password"
+                  className="w-full border p-2 rounded"
+                  required
+                />
+                <button
+                  type="button"
+                  className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-600 hover:text-gray-800"
+                  onClick={togglePasswordVisibility}
+                >
+                  {showPassword ? "Hide" : "Show"}
+                </button>
+              </div>
             </div>
             <div className="flex items-center justify-between">
               <label className="flex items-center text-sm">
