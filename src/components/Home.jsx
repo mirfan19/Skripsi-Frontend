@@ -1,11 +1,19 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import api from "../api/axios";
 
 export default function Home() {
   const [products, setProducts] = useState([]);
+  const [isLoggedIn, setIsLoggedIn] = useState(false); // Track login state
+  const navigate = useNavigate();
 
   useEffect(() => {
+    // Check if the user is logged in
+    const token = localStorage.getItem("token");
+    if (token) {
+      setIsLoggedIn(true);
+    }
+
     // Fetch products from the backend
     const fetchProducts = async () => {
       try {
@@ -18,6 +26,17 @@ export default function Home() {
 
     fetchProducts();
   }, []);
+
+  const handleLogout = () => {
+    // Clear the token and update login state
+    localStorage.removeItem("token");
+    setIsLoggedIn(false);
+    navigate("/home"); // Redirect to home page - CORRECTED ROUTE
+  };
+
+  const handleLogin = () => {
+    navigate("/login"); // Redirect to login page
+  };
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -35,6 +54,23 @@ export default function Home() {
             Tentang Kami
           </Link>
         </nav>
+        <div>
+          {isLoggedIn ? (
+            <button
+              onClick={handleLogout}
+              className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition"
+            >
+              Logout
+            </button>
+          ) : (
+            <button
+              onClick={handleLogin}
+              className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition"
+            >
+              Login
+            </button>
+          )}
+        </div>
       </header>
 
       {/* Hero Section */}

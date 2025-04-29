@@ -1,6 +1,6 @@
 // src/pages/Register.jsx
 import { motion } from "framer-motion";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom"; // Import useNavigate
 import { useState } from "react";
 import api from "../api/axios";
 
@@ -12,6 +12,8 @@ export default function Register() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState(""); // State for error messages
   const [successMessage, setSuccessMessage] = useState(""); // State for success message
+
+  const navigate = useNavigate(); // Initialize useNavigate
 
   const handleRegister = async (e) => {
     e.preventDefault();
@@ -40,6 +42,11 @@ export default function Register() {
       setPhone("");
       setPassword("");
       setConfirmPassword("");
+
+      // Redirect to login page after a short delay
+      setTimeout(() => {
+        navigate("/login"); // Redirect to the login page
+      }, 2000); // Optional: Add a delay of 2 seconds to show the success message
     } catch (error) {
       // Handle errors (e.g., duplicate email or username)
       if (error.response && error.response.data.message) {
