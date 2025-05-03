@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import api from "../api/axios";
+import { FaUser, FaHeart, FaShoppingCart } from "react-icons/fa";
 
 export default function Home() {
   const [products, setProducts] = useState([]);
@@ -85,7 +86,7 @@ export default function Home() {
         </form>
 
         {/* Navigation Links */}
-        <nav className="space-x-4">
+        <nav className="space-x-4 flex items-center">
           <Link to="/products" className="hover:underline">
             Produk
           </Link>
@@ -97,23 +98,41 @@ export default function Home() {
           </Link>
         </nav>
 
-        {/* Login/Logout Button */}
-        <div>
-          {isLoggedIn ? (
-            <button
-              onClick={handleLogout}
-              className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition"
-            >
-              Logout
+        {/* Icons Section */}
+        <div className="flex items-center space-x-6">
+          {/* Wishlist Icon */}
+          <Link to="/wishlist" className="hover:text-gray-200 relative">
+            <FaHeart className="text-2xl" />
+          </Link>
+
+          {/* Cart Icon */}
+          <Link to="/cart" className="hover:text-gray-200 relative">
+            <FaShoppingCart className="text-2xl" />
+          </Link>
+
+          {/* User Icon with Login/Logout */}
+          <div className="relative group">
+            <button className="hover:text-gray-200 flex items-center">
+              <FaUser className="text-2xl" />
             </button>
-          ) : (
-            <button
-              onClick={handleLogin}
-              className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition"
-            >
-              Login
-            </button>
-          )}
+            <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 hidden group-hover:block">
+              {isLoggedIn ? (
+                <button
+                  onClick={handleLogout}
+                  className="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                >
+                  Logout
+                </button>
+              ) : (
+                <button
+                  onClick={handleLogin}
+                  className="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                >
+                  Login
+                </button>
+              )}
+            </div>
+          </div>
         </div>
       </header>
 
