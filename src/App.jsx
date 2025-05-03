@@ -9,6 +9,7 @@ import Login from "./components/Login";
 import Register from "./components/Register";
 import Home from "./components/Home";
 import ProtectedRoute from "./components/ProtectedRoute";
+import Dashboard from "./components/Dashboard";
 
 function AnimatedRoutes() {
   const location = useLocation();
@@ -16,13 +17,16 @@ function AnimatedRoutes() {
   return (
     <AnimatePresence>
       <Routes location={location} key={location.pathname}>
+        <Route path="/" element={<Home />} /> {/* Add default route */}
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/home" element={<Home />} /> {/* Public home route */}
+        {/* Protected routes */}
         <Route
-          path="/home"
+          path="/dashboard"
           element={
             <ProtectedRoute>
-              <Home />
+              <Dashboard />
             </ProtectedRoute>
           }
         />
