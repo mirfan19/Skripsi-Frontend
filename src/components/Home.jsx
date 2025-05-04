@@ -9,6 +9,7 @@ export default function Home() {
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const navigate = useNavigate();
 
   const fetchProducts = async (query = "") => {
@@ -16,7 +17,7 @@ export default function Home() {
       setLoading(true);
       setError(null);
       const response = await api.get("/api/products", {
-        // Update endpoint to match backend
+        // Add /api prefix
         params: { search: query },
       });
       console.log("Products response:", response.data);
@@ -51,6 +52,21 @@ export default function Home() {
   const handleLogin = () => {
     navigate("/login"); // Redirect to login page
   };
+
+  const toggleDropdown = () => {
+    setIsDropdownOpen(!isDropdownOpen);
+  };
+
+  useEffect(() => {
+    const closeDropdown = (e) => {
+      if (!e.target.closest(".user-menu")) {
+        setIsDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener("click", closeDropdown);
+    return () => document.removeEventListener("click", closeDropdown);
+  }, []);
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -111,21 +127,34 @@ export default function Home() {
           </Link>
 
           {/* User Icon with Login/Logout */}
-          <div className="relative group">
-            <button className="hover:text-gray-200 flex items-center">
+          <div className="relative user-menu">
+            <button
+              onClick={toggleDropdown}
+              className="hover:text-gray-200 flex items-center"
+            >
               <FaUser className="text-2xl" />
             </button>
-            <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 hidden group-hover:block">
+            <div
+              className={`absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 ${
+                isDropdownOpen ? "block" : "hidden"
+              }`}
+            >
               {isLoggedIn ? (
                 <button
-                  onClick={handleLogout}
+                  onClick={() => {
+                    handleLogout();
+                    setIsDropdownOpen(false);
+                  }}
                   className="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                 >
                   Logout
                 </button>
               ) : (
                 <button
-                  onClick={handleLogin}
+                  onClick={() => {
+                    handleLogin();
+                    setIsDropdownOpen(false);
+                  }}
                   className="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                 >
                   Login
