@@ -1,15 +1,13 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { FaHeart } from "react-icons/fa"; // Import wishlist icon
 import api from "../api/axios";
-import { FaUser, FaHeart, FaShoppingCart } from "react-icons/fa";
+import Header from "./Header";
 
 export default function Home() {
   const [products, setProducts] = useState([]);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const navigate = useNavigate();
 
   const fetchProducts = async (query = "") => {
@@ -17,154 +15,42 @@ export default function Home() {
       setLoading(true);
       setError(null);
       const response = await api.get("/api/products", {
-        // Add /api prefix
         params: { search: query },
       });
-      console.log("Products response:", response.data);
       setProducts(response.data.data || []);
     } catch (error) {
       console.error("Error fetching products:", error);
       setError("Failed to load products");
-      setProducts([]);
     } finally {
       setLoading(false);
     }
   };
 
+  const addToWishlist = async (productId) => {
+    try {
+      const userId = localStorage.getItem("userId"); // Assume user ID is stored in localStorage
+      const response = await api.post("/api/wishlists/add", {
+        UserID: userId,
+        ProductID: productId,
+      });
+      alert("Product added to wishlist!");
+    } catch (error) {
+      console.error("Error adding to wishlist:", error);
+      alert("Failed to add product to wishlist.");
+    }
+  };
+
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    setIsLoggedIn(!!token);
     fetchProducts();
   }, []);
 
-  const handleSearch = (e) => {
-    e.preventDefault();
-    fetchProducts(searchQuery);
+  const handleSearch = (query) => {
+    fetchProducts(query);
   };
-
-  const handleLogout = () => {
-    // Clear the token and update login state
-    localStorage.removeItem("token");
-    setIsLoggedIn(false);
-    navigate("/home"); // Redirect to home page - CORRECTED ROUTE
-  };
-
-  const handleLogin = () => {
-    navigate("/login"); // Redirect to login page
-  };
-
-  const toggleDropdown = () => {
-    setIsDropdownOpen(!isDropdownOpen);
-  };
-
-  useEffect(() => {
-    const closeDropdown = (e) => {
-      if (!e.target.closest(".user-menu")) {
-        setIsDropdownOpen(false);
-      }
-    };
-
-    document.addEventListener("click", closeDropdown);
-    return () => document.removeEventListener("click", closeDropdown);
-  }, []);
 
   return (
     <div className="min-h-screen bg-gray-100">
-      {/* Header */}
-      <header className="bg-blue-600 text-white py-4 px-8 flex justify-between items-center">
-        {/* Logo */}
-        <div className="flex items-center">
-          <img
-            src="/logo.png" // Replace with the actual path to your logo image
-            alt="Toko Ilham Logo"
-            className="h-10 w-10 mr-2"
-          />
-          <h1 className="text-2xl font-bold">TOKO ILHAM</h1>
-        </div>
-
-        {/* Search Bar */}
-        <form onSubmit={handleSearch} className="flex-1 max-w-xl mx-4">
-          <div className="relative">
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Cari produk..."
-              className="w-full px-4 py-2 text-gray-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-            />
-            <button
-              type="submit"
-              className="absolute right-2 top-1/2 -translate-y-1/2 px-4 py-1 bg-blue-700 text-white rounded hover:bg-blue-800"
-            >
-              Cari
-            </button>
-          </div>
-        </form>
-
-        {/* Navigation Links */}
-        <nav className="space-x-4 flex items-center">
-          <Link to="/products" className="hover:underline">
-            Produk
-          </Link>
-          <Link to="/services" className="hover:underline">
-            Pelayanan
-          </Link>
-          <Link to="/about" className="hover:underline">
-            Tentang Kami
-          </Link>
-        </nav>
-
-        {/* Icons Section */}
-        <div className="flex items-center space-x-6">
-          {/* Wishlist Icon */}
-          <Link to="/wishlist" className="hover:text-gray-200 relative">
-            <FaHeart className="text-2xl" />
-          </Link>
-
-          {/* Cart Icon */}
-          <Link to="/cart" className="hover:text-gray-200 relative">
-            <FaShoppingCart className="text-2xl" />
-          </Link>
-
-          {/* User Icon with Login/Logout */}
-          <div className="relative user-menu">
-            <button
-              onClick={toggleDropdown}
-              className="hover:text-gray-200 flex items-center"
-            >
-              <FaUser className="text-2xl" />
-            </button>
-            <div
-              className={`absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 ${
-                isDropdownOpen ? "block" : "hidden"
-              }`}
-            >
-              {isLoggedIn ? (
-                <button
-                  onClick={() => {
-                    handleLogout();
-                    setIsDropdownOpen(false);
-                  }}
-                  className="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                >
-                  Logout
-                </button>
-              ) : (
-                <button
-                  onClick={() => {
-                    handleLogin();
-                    setIsDropdownOpen(false);
-                  }}
-                  className="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                >
-                  Login
-                </button>
-              )}
-            </div>
-          </div>
-        </div>
-      </header>
-
+      <Header onSearch={handleSearch} />
       {/* Hero Section */}
       <section className="bg-white py-12 px-8">
         <h2 className="text-3xl font-bold text-center mb-4">
@@ -175,7 +61,10 @@ export default function Home() {
           kebutuhan lainnya.
         </p>
         <div className="flex justify-center">
-          <button className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition">
+          <button
+            onClick={() => navigate("/products")}
+            className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition"
+          >
             Lihat Produk
           </button>
         </div>
@@ -200,7 +89,7 @@ export default function Home() {
             {products.map((product) => (
               <div
                 key={product.ProductID}
-                className="bg-white p-4 rounded shadow hover:shadow-lg transition-shadow"
+                className="bg-white p-4 rounded shadow hover:shadow-lg transition-shadow relative"
               >
                 <img
                   src={
@@ -225,6 +114,12 @@ export default function Home() {
                 <p className="text-sm text-gray-500">
                   Stock: {product.StockQuantity}
                 </p>
+                <button
+                  className="absolute top-2 right-2 text-red-500 hover:text-red-700"
+                  onClick={() => addToWishlist(product.ProductID)}
+                >
+                  <FaHeart size={20} />
+                </button>
                 {product.StockQuantity > 0 && (
                   <button
                     className="mt-2 w-full bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"

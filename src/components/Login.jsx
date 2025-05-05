@@ -19,11 +19,10 @@ export default function Login() {
         username,
         password,
       });
-      console.log("Login response:", response);
       localStorage.setItem("token", response.data.data.token);
+      localStorage.setItem("userId", response.data.data.user.id);
       navigate("/home");
     } catch (error) {
-      console.error("Login error:", error);
       setErrorMessage("Username or password is incorrect. Please try again.");
     }
   };
