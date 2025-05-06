@@ -10,11 +10,13 @@ export default function Header({ onSearch }) {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    setIsLoggedIn(!!token);
+    const userId = localStorage.getItem("userId");
+    setIsLoggedIn(!!(token && userId));
   }, []);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
+    localStorage.removeItem("userId");
     setIsLoggedIn(false);
     navigate("/home");
   };
@@ -78,52 +80,60 @@ export default function Header({ onSearch }) {
 
       {/* Icons Section */}
       <div className="flex items-center space-x-6">
-        {/* Wishlist Icon */}
-        <Link to="/wishlist" className="hover:text-gray-200 relative">
-          <FaHeart className="text-2xl" />
-        </Link>
+        {isLoggedIn ? (
+          <>
+            {/* Wishlist Icon */}
+            <Link to="/wishlist" className="hover:text-gray-200 relative">
+              <FaHeart className="text-2xl" />
+            </Link>
 
-        {/* Cart Icon */}
-        <Link to="/cart" className="hover:text-gray-200 relative">
-          <FaShoppingCart className="text-2xl" />
-        </Link>
+            {/* Cart Icon */}
+            <Link to="/cart" className="hover:text-gray-200 relative">
+              <FaShoppingCart className="text-2xl" />
+            </Link>
 
-        {/* User Icon with Login/Logout */}
-        <div className="relative user-menu">
-          <button
-            onClick={toggleDropdown}
-            className="hover:text-gray-200 flex items-center"
-          >
-            <FaUser className="text-2xl" />
-          </button>
-          <div
-            className={`absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 ${
-              isDropdownOpen ? "block" : "hidden"
-            }`}
-          >
-            {isLoggedIn ? (
+            {/* User Icon with Dropdown */}
+            <div className="relative user-menu">
               <button
-                onClick={() => {
-                  handleLogout();
-                  setIsDropdownOpen(false);
-                }}
-                className="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                onClick={toggleDropdown}
+                className="hover:text-gray-200 flex items-center"
               >
-                Logout
+                <FaUser className="text-2xl" />
               </button>
-            ) : (
-              <button
-                onClick={() => {
-                  handleLogin();
-                  setIsDropdownOpen(false);
-                }}
-                className="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+              <div
+                className={`absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 ${
+                  isDropdownOpen ? "block" : "hidden"
+                }`}
               >
-                Login
-              </button>
-            )}
-          </div>
-        </div>
+                <Link
+                  to="/profile"
+                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  onClick={() => setIsDropdownOpen(false)}
+                >
+                  Profile
+                </Link>
+                <button
+                  onClick={() => {
+                    handleLogout();
+                    setIsDropdownOpen(false);
+                  }}
+                  className="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 text-left"
+                >
+                  Logout
+                </button>
+              </div>
+            </div>
+          </>
+        ) : (
+          <>
+            <Link to="/login" className="hover:text-gray-200">
+              Login
+            </Link>
+            <Link to="/register" className="hover:text-gray-200">
+              Register
+            </Link>
+          </>
+        )}
       </div>
     </header>
   );

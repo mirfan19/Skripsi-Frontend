@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { FaHeart } from "react-icons/fa"; // Import wishlist icon
 import api from "../api/axios";
 import Header from "./Header";
@@ -9,6 +9,7 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+  const isLoggedIn = !!localStorage.getItem("userId");
 
   const fetchProducts = async (query = "") => {
     try {
@@ -37,6 +38,28 @@ export default function Home() {
     } catch (error) {
       console.error("Error adding to wishlist:", error);
       alert("Failed to add product to wishlist.");
+    }
+  };
+
+  const addToCart = async (e, productId) => {
+    e.stopPropagation();
+    try {
+      const userId = localStorage.getItem("userId");
+      if (!userId) {
+        navigate("/login");
+        return;
+      }
+
+      await api.post("/api/cart/add", {
+        UserID: userId,
+        ProductID: productId,
+        Quantity: 1,
+      });
+
+      alert("Product added to cart!");
+    } catch (error) {
+      console.error("Error adding to cart:", error);
+      alert("Failed to add product to cart");
     }
   };
 
@@ -111,24 +134,31 @@ export default function Home() {
                 <p className="text-lg font-bold text-blue-600">
                   Rp {product.Price.toLocaleString("id-ID")}
                 </p>
-                <p className="text-sm text-gray-500">
-                  Stock: {product.StockQuantity}
-                </p>
-                <button
-                  className="absolute top-2 right-2 text-red-500 hover:text-red-700"
-                  onClick={() => addToWishlist(product.ProductID)}
-                >
-                  <FaHeart size={20} />
-                </button>
-                {product.StockQuantity > 0 && (
-                  <button
-                    className="mt-2 w-full bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
-                    onClick={() => {
-                      /* Add to cart functionality */
-                    }}
+
+                {isLoggedIn ? (
+                  <>
+                    <button
+                      className="absolute top-2 right-2 text-red-500 hover:text-red-700"
+                      onClick={() => addToWishlist(product.ProductID)}
+                    >
+                      <FaHeart size={20} />
+                    </button>
+                    {product.StockQuantity > 0 && (
+                      <button
+                        className="mt-2 w-full bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
+                        onClick={(e) => addToCart(e, product.ProductID)}
+                      >
+                        Add to Cart
+                      </button>
+                    )}
+                  </>
+                ) : (
+                  <Link
+                    to="/login"
+                    className="mt-2 block text-center bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
                   >
-                    Add to Cart
-                  </button>
+                    Login to Purchase
+                  </Link>
                 )}
               </div>
             ))}

@@ -73,7 +73,8 @@ export default function ProductList() {
           {products.map((product) => (
             <div
               key={product.ProductID}
-              className="bg-white p-4 rounded shadow hover:shadow-lg transition-shadow relative"
+              className="bg-white p-4 rounded shadow hover:shadow-lg transition-shadow relative cursor-pointer"
+              onClick={() => navigate(`/products/${product.ProductID}`)}
             >
               <img
                 src={

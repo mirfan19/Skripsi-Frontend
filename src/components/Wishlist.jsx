@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { FaTrash } from "react-icons/fa"; // Import trash icon
 import api from "../api/axios";
 import Header from "./Header";
 
@@ -31,6 +32,32 @@ export default function Wishlist() {
       setError(error.response?.data?.message || "Failed to load wishlist");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const removeFromWishlist = async (productId) => {
+    try {
+      const userId = localStorage.getItem("userId");
+      if (!userId) {
+        navigate("/login");
+        return;
+      }
+
+      const response = await api.delete(
+        `/api/wishlists/user/${userId}/product/${productId}`
+      );
+
+      if (response.data.success) {
+        // Update the wishlist state by filtering out the removed item
+        setWishlist((prevWishlist) =>
+          prevWishlist.filter((item) => item.ProductID !== productId)
+        );
+      } else {
+        alert("Failed to remove item from wishlist");
+      }
+    } catch (error) {
+      console.error("Error removing from wishlist:", error);
+      alert("Failed to remove item from wishlist");
     }
   };
 
@@ -68,8 +95,17 @@ export default function Wishlist() {
           {wishlist.map((item) => (
             <div
               key={item.Product.ProductID}
-              className="bg-white p-4 rounded shadow hover:shadow-lg transition-shadow"
+              className="bg-white p-4 rounded shadow hover:shadow-lg transition-shadow relative"
             >
+              {/* Delete button */}
+              <button
+                onClick={() => removeFromWishlist(item.Product.ProductID)}
+                className="absolute top-2 right-2 text-red-500 hover:text-red-700 p-2"
+                title="Remove from wishlist"
+              >
+                <FaTrash size={16} />
+              </button>
+
               <img
                 src={
                   item.Product.ImageURL

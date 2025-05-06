@@ -12,6 +12,8 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import Dashboard from "./components/Dashboard";
 import ProductList from "./components/ProductList";
 import Wishlist from "./components/Wishlist";
+import ProductDetail from "./components/ProductDetail";
+import Cart from "./components/Cart";
 
 function AnimatedRoutes() {
   const location = useLocation();
@@ -25,6 +27,9 @@ function AnimatedRoutes() {
         <Route path="/home" element={<Home />} /> {/* Public home route */}
         <Route path="/products" element={<ProductList />} /> {/* New Route */}
         <Route path="/wishlist" element={<Wishlist />} /> {/* New Route */}
+        <Route path="/products/:id" element={<ProductDetail />} />{" "}
+        {/* New Route */}
+        <Route path="/cart" element={<Cart />} /> {/* New Route */}
         {/* Protected routes */}
         <Route
           path="/dashboard"
