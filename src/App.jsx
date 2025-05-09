@@ -14,6 +14,8 @@ import ProductList from "./components/ProductList";
 import Wishlist from "./components/Wishlist";
 import ProductDetail from "./components/ProductDetail";
 import Cart from "./components/Cart";
+import Checkout from "./components/Checkout";
+import Payment from "./components/Payment";
 
 function AnimatedRoutes() {
   const location = useLocation();
@@ -30,6 +32,8 @@ function AnimatedRoutes() {
         <Route path="/products/:id" element={<ProductDetail />} />{" "}
         {/* New Route */}
         <Route path="/cart" element={<Cart />} /> {/* New Route */}
+        <Route path="/checkout" element={<Checkout />} /> {/* New Route */}
+        <Route path="/payment" element={<Payment />} /> {/* New Route */}
         {/* Protected routes */}
         <Route
           path="/dashboard"

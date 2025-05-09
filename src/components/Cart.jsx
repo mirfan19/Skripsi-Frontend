@@ -64,6 +64,12 @@ export default function Cart() {
     navigate("/checkout");
   };
 
+  const steps = [
+    { id: 1, name: "Cart" },
+    { id: 2, name: "Checkout" },
+    { id: 3, name: "Payment" },
+  ];
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-100">
@@ -78,17 +84,41 @@ export default function Cart() {
   return (
     <div className="min-h-screen bg-gray-100">
       <Header />
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-3xl font-bold">Shopping Cart</h1>
-          <div className="flex space-x-4">
-            <span className="text-blue-600">Cart</span>
-            <span>→</span>
-            <span className="text-gray-400">Checkout</span>
-            <span>→</span>
-            <span className="text-gray-400">Payment</span>
-          </div>
-        </div>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <nav
+          className="flex items-center justify-center py-4 mb-8"
+          aria-label="Progress"
+        >
+          <ol className="flex items-center space-x-8">
+            {steps.map((step, stepIdx) => (
+              <li key={step.id} className="flex items-center">
+                <div className="relative flex items-center">
+                  <div
+                    className={`${
+                      stepIdx === 0 ? "bg-blue-600" : "bg-gray-300"
+                    } rounded-full h-8 w-8 flex items-center justify-center`}
+                  >
+                    <span className="text-white">{step.id}</span>
+                  </div>
+                  <span
+                    className={`ml-4 text-sm font-medium ${
+                      stepIdx === 0 ? "text-blue-600" : "text-gray-500"
+                    }`}
+                  >
+                    {step.name}
+                  </span>
+                </div>
+                {stepIdx !== steps.length - 1 && (
+                  <div className="ml-8 hidden md:block">
+                    <div className="h-0.5 w-16 bg-gray-300"></div>
+                  </div>
+                )}
+              </li>
+            ))}
+          </ol>
+        </nav>
+
+        <h1 className="text-3xl font-bold mb-6">Shopping Cart</h1>
 
         {error ? (
           <div className="text-red-600 text-center">{error}</div>
