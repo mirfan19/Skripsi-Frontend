@@ -51,19 +51,61 @@ export default function Checkout() {
 
   const handleSubmitOrder = async (e) => {
     e.preventDefault();
+
+    if (
+      !formData.name ||
+      !formData.email ||
+      !formData.phone ||
+      !formData.address
+    ) {
+      alert("Please fill in all required fields");
+      return;
+    }
+
     try {
       const userId = localStorage.getItem("userId");
+      const totalAmount = calculateTotal();
+
+      if (!userId) {
+        navigate("/login");
+        return;
+      }
+
       const response = await api.post("/api/orders", {
-        userId,
-        items: cartItems,
-        shippingDetails: formData,
+        UserID: parseInt(userId),
+        OrderItems: cartItems.map((item) => ({
+          ProductID: item.Product.ProductID,
+          Quantity: item.Quantity,
+          Price: item.Product.Price,
+        })),
+        ShippingDetails: formData,
+        TotalAmount: parseFloat(totalAmount),
+        Status: "Pending",
       });
 
       if (response.data.success) {
-        navigate("/order-confirmation");
+        try {
+          // Clear cart after successful order creation
+          await api.delete(`/api/cart/user/${userId}`);
+        } catch (cartError) {
+          console.error("Error clearing cart:", cartError);
+          // Continue even if cart clearing fails
+        }
+
+        // Navigate to Payment page
+        navigate("/payment", {
+          state: {
+            orderDetails: {
+              orderId: response.data.data.orderId,
+              totalAmount: totalAmount,
+              shippingDetails: formData,
+            },
+          },
+        });
       }
     } catch (error) {
       console.error("Error submitting order:", error);
+      alert(error.response?.data?.message || "Failed to create order");
     }
   };
 
@@ -112,12 +154,16 @@ export default function Checkout() {
       </div>
       <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="flex flex-col md:flex-row gap-8">
-          {/* Left Column - Payment Form */}
-          <div className="md:w-2/3">
-            <div className="bg-white p-6 rounded-lg shadow">
-              <h2 className="text-2xl font-bold mb-6">Pembayaran</h2>
-              <form onSubmit={handleSubmitOrder}>
+          <form
+            onSubmit={handleSubmitOrder}
+            className="flex flex-col md:flex-row gap-8 w-full"
+          >
+            {/* Left Column - Shipping Form */}
+            <div className="md:w-2/3">
+              <div className="bg-white p-6 rounded-lg shadow">
+                <h2 className="text-2xl font-bold mb-6">Pembayaran</h2>
                 <div className="space-y-4">
+                  {/* Your existing form fields */}
                   <div>
                     <label className="block text-sm font-medium text-gray-700">
                       Nama
@@ -131,7 +177,6 @@ export default function Checkout() {
                       required
                     />
                   </div>
-
                   <div>
                     <label className="block text-sm font-medium text-gray-700">
                       Email
@@ -201,48 +246,50 @@ export default function Checkout() {
                     />
                   </div>
                 </div>
-              </form>
-            </div>
-          </div>
-
-          {/* Right Column - Order Summary */}
-          <div className="md:w-1/3">
-            <div className="bg-white p-6 rounded-lg shadow">
-              <h2 className="text-2xl font-bold mb-6">Pesanan</h2>
-              <div className="space-y-4">
-                {cartItems.map((item) => (
-                  <div key={item.CartID} className="flex justify-between">
-                    <span>{item.Product.ProductName}</span>
-                    <span>
-                      Rp{" "}
-                      {(item.Product.Price * item.Quantity).toLocaleString(
-                        "id-ID"
-                      )}
-                    </span>
-                  </div>
-                ))}
-                <div className="border-t pt-4">
-                  <div className="flex justify-between font-bold">
-                    <span>Total</span>
-                    <span>Rp {calculateTotal().toLocaleString("id-ID")}</span>
-                  </div>
-                </div>
-                <button
-                  type="submit"
-                  className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition duration-150"
-                >
-                  Membuat pesanan
-                </button>
-                <button
-                  type="button"
-                  onClick={() => navigate("/cart")}
-                  className="w-full bg-gray-200 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-300 transition duration-150"
-                >
-                  Kembali ke cart
-                </button>
               </div>
             </div>
-          </div>
+
+            {/* Right Column - Order Summary */}
+            <div className="md:w-1/3">
+              <div className="bg-white p-6 rounded-lg shadow">
+                <h2 className="text-2xl font-bold mb-6">Pesanan</h2>
+                <div className="space-y-4">
+                  {cartItems.map((item) => (
+                    <div key={item.CartID} className="flex justify-between">
+                      <span>{item.Product.ProductName}</span>
+                      <span>
+                        Rp{" "}
+                        {(item.Product.Price * item.Quantity).toLocaleString(
+                          "id-ID"
+                        )}
+                      </span>
+                    </div>
+                  ))}
+                  <div className="border-t pt-4">
+                    <div className="flex justify-between font-bold">
+                      <span>Total</span>
+                      <span>Rp {calculateTotal().toLocaleString("id-ID")}</span>
+                    </div>
+                  </div>
+                  <div className="mt-6 space-y-2">
+                    <button
+                      type="submit"
+                      className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition duration-150"
+                    >
+                      Membuat pesanan
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => navigate("/cart")}
+                      className="w-full bg-gray-200 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-300 transition duration-150"
+                    >
+                      Kembali ke cart
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
         </div>
       </div>
     </div>
