@@ -14,7 +14,10 @@ export default function Payment() {
   useEffect(() => {
     const script = document.createElement("script");
     script.src = "https://app.sandbox.midtrans.com/snap/snap.js";
-    script.setAttribute("data-client-key", "YOUR-CLIENT-KEY");
+    script.setAttribute(
+      "data-client-key",
+      import.meta.env.VITE_MIDTRANS_CLIENT_KEY
+    );
     document.head.appendChild(script);
 
     return () => {
@@ -78,8 +81,9 @@ export default function Payment() {
                 },
               });
             },
-            onError: function (result) {
-              alert("Payment failed");
+            onError: function (error) {
+              console.error("Payment error:", error);
+              alert("Payment failed: " + (error.message || "Unknown error"));
               setIsLoading(false);
             },
             onClose: function () {
