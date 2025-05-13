@@ -1,45 +1,99 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import Header from "./Header";
 import api from "../api/axios";
 
 export default function Payment() {
   const [paymentMethod, setPaymentMethod] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const orderDetails = location.state?.orderDetails;
 
+  // Add Midtrans snap
+  useEffect(() => {
+    const script = document.createElement("script");
+    script.src = "https://app.sandbox.midtrans.com/snap/snap.js";
+    script.setAttribute("data-client-key", "YOUR-CLIENT-KEY");
+    document.head.appendChild(script);
+
+    return () => {
+      document.head.removeChild(script);
+    };
+  }, []);
+
   const handleSubmitPayment = async (e) => {
     e.preventDefault();
-
-    if (!paymentMethod) {
-      alert("Please select a payment method");
-      return;
-    }
+    setIsLoading(true);
 
     try {
+      // Create payment
       const response = await api.post("/api/payments", {
         OrderID: orderDetails.orderId,
         PaymentMethod: paymentMethod,
-        Amount: orderDetails.totalAmount,
+        Amount: parseFloat(orderDetails.totalAmount),
         Status: "Pending",
       });
 
       if (response.data.success) {
-        // Redirect to confirmation page
-        navigate("/order-confirmation", {
-          state: {
-            orderDetails: {
-              ...orderDetails,
-              paymentId: response.data.data.PaymentID,
-              paymentMethod: paymentMethod,
+        if (paymentMethod === "bayar_ditempat") {
+          // Handle cash on delivery
+          navigate("/order-confirmation", {
+            state: {
+              orderDetails: {
+                ...orderDetails,
+                paymentId: response.data.data.PaymentID,
+                paymentMethod: paymentMethod,
+                status: "pending",
+              },
             },
-          },
-        });
+          });
+        } else {
+          // Handle Midtrans payment
+          const token = response.data.data.token;
+          window.snap.pay(token, {
+            onSuccess: function (result) {
+              navigate("/order-confirmation", {
+                state: {
+                  orderDetails: {
+                    ...orderDetails,
+                    paymentId: response.data.data.PaymentID,
+                    paymentMethod: paymentMethod,
+                    status: "success",
+                  },
+                  paymentResult: result,
+                },
+              });
+            },
+            onPending: function (result) {
+              navigate("/order-confirmation", {
+                state: {
+                  orderDetails: {
+                    ...orderDetails,
+                    paymentId: response.data.data.PaymentID,
+                    paymentMethod: paymentMethod,
+                    status: "pending",
+                  },
+                  paymentResult: result,
+                },
+              });
+            },
+            onError: function (result) {
+              alert("Payment failed");
+              setIsLoading(false);
+            },
+            onClose: function () {
+              alert("Payment cancelled");
+              setIsLoading(false);
+            },
+          });
+        }
       }
     } catch (error) {
       console.error("Payment error:", error);
-      alert("Payment failed. Please try again.");
+      alert(error.response?.data?.message || "Payment failed");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -95,9 +149,9 @@ export default function Payment() {
             <button
               type="submit"
               className="w-full mt-4 bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
-              disabled={!paymentMethod}
+              disabled={!paymentMethod || isLoading}
             >
-              Konfirmasi Pembayaran
+              {isLoading ? "Processing..." : "Konfirmasi Pembayaran"}
             </button>
           </form>
         </div>

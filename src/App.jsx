@@ -16,6 +16,7 @@ import ProductDetail from "./components/ProductDetail";
 import Cart from "./components/Cart";
 import Checkout from "./components/Checkout";
 import Payment from "./components/Payment";
+import OrderConfirmation from "./components/OrderConfirmation";
 
 function AnimatedRoutes() {
   const location = useLocation();
@@ -34,6 +35,11 @@ function AnimatedRoutes() {
         <Route path="/cart" element={<Cart />} /> {/* New Route */}
         <Route path="/checkout" element={<Checkout />} /> {/* New Route */}
         <Route path="/payment" element={<Payment />} /> {/* New Route */}
+        <Route
+          path="/order-confirmation"
+          element={<OrderConfirmation />}
+        />{" "}
+        {/* New Route */}
         {/* Protected routes */}
         <Route
           path="/dashboard"
