@@ -1,33 +1,36 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "http://localhost:3000/api/v1", // <-- add /api here
+  baseURL: "http://localhost:3000/api/v1",
   headers: {
     "Content-Type": "application/json",
   },
 });
 
-// Add request interceptor to include auth token
-api.interceptors.request.use((config) => {
-  const token = localStorage.getItem("token");
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
+// Add request interceptor
+api.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
   }
-  return config;
-});
+);
 
-// Add response interceptor for better error handling
+// Add response interceptor
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
-      // Clear auth data on unauthorized
+    if (error.response && error.response.status === 401) {
       localStorage.removeItem("token");
-      localStorage.removeItem("userId");
       localStorage.removeItem("role");
-      window.location.href = "/login";
+      localStorage.removeItem("userId");
+      window.location.href = "/login/admin";
     }
-    console.error('API Error:', error);
     return Promise.reject(error);
   }
 );

@@ -1,56 +1,55 @@
-import { Navigate, useLocation } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { Navigate } from "react-router-dom";
+import { useState, useEffect } from "react";
 import api from "../api/axios";
 
-export default function ProtectedRoute({ children }) {
-  const [isLoading, setIsLoading] = useState(true);
+export default function ProtectedRoute({ children, adminOnly = false }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const location = useLocation();
-  const isAdminRoute = location.pathname.startsWith("/admin");
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const verifyAuth = async () => {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        setIsAuthenticated(false);
-        setIsLoading(false);
-        return;
-      }
-
       try {
-        const response = await api.get("/auth/check-role");
-        const role = response.data.data.role;
-        localStorage.setItem("role", role); // Update the role in localStorage
+        const token = localStorage.getItem("token");
+        const role = localStorage.getItem("role");
 
-        if (isAdminRoute && role !== "admin") {
+        if (!token) {
           setIsAuthenticated(false);
+          setIsLoading(false);
+          return;
+        }
+
+        if (adminOnly && role !== "admin") {
+          setIsAuthenticated(false);
+          setIsLoading(false);
+          return;
+        }
+
+        const response = await api.get("/auth/check-role");
+        if (adminOnly) {
+          setIsAuthenticated(response.data.data.role === "admin");
         } else {
           setIsAuthenticated(true);
         }
-      } catch {
-        // Clear all auth data on error
-        localStorage.removeItem("token");
-        localStorage.removeItem("userId");
-        localStorage.removeItem("role");
+      } catch (error) {
         setIsAuthenticated(false);
       }
       setIsLoading(false);
     };
 
     verifyAuth();
-  }, [isAdminRoute]);
+  }, [adminOnly]);
 
   if (isLoading) {
-    // You could return a loading spinner here
-    return <div>Loading...</div>;
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      </div>
+    );
   }
 
-  if (!isAuthenticated) {
-    if (isAdminRoute) {
-      return <Navigate to="/login/admin" state={{ from: location }} replace />;
-    }
-    return <Navigate to="/login" state={{ from: location }} replace />;
-  }
-
-  return children;
+  return isAuthenticated ? (
+    children
+  ) : (
+    <Navigate to={adminOnly ? "/login/admin" : "/login"} replace />
+  );
 }

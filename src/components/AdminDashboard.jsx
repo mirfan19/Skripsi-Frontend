@@ -26,16 +26,23 @@ export default function AdminDashboard() {
   useEffect(() => {
     const checkAdminAndFetchStats = async () => {
       try {
-        const roleResponse = await api.get("/api/v1/auth/check-role");
-        if (roleResponse.data.data.role !== "admin") { // Ensure correct role access
-          navigate("/login");
+        const token = localStorage.getItem("token");
+        const role = localStorage.getItem("role");
+
+        if (!token || role !== "admin") {
+          // Redirect to admin login
+          navigate("/login/admin");
           return;
         }
 
+        // Add token to request headers
+        api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+
+        // Fetch admin dashboard stats
         const [salesRes, ordersRes, productsRes] = await Promise.all([
-          api.get("/api/v1/admin/stats/total-sales"),
-          api.get("/api/v1/admin/stats/new-orders"),
-          api.get("/api/v1/admin/stats/low-stock"),
+          api.get("/admin/stats/total-sales"),
+          api.get("/admin/stats/new-orders"),
+          api.get("/admin/stats/low-stock"),
         ]);
 
         setStats({
@@ -44,8 +51,12 @@ export default function AdminDashboard() {
           stokMenipis: productsRes.data.count || 0,
         });
       } catch (error) {
-        console.error("Error during admin check or fetching stats:", error);
-        navigate("/login");
+        console.error("Error:", error);
+        // Clear auth data on error
+        localStorage.removeItem("token");
+        localStorage.removeItem("role");
+        localStorage.removeItem("userId");
+        navigate("/login/admin");
       }
     };
 
@@ -111,16 +122,6 @@ export default function AdminDashboard() {
         change: transaction.kembalian,
       });
 
-      localStorage.setItem("token", response.data.data.token);
-      localStorage.setItem("userId", response.data.data.user.id);
-      localStorage.setItem("role", response.data.data.user.role);
-
-      if (response.data.data.user.role === "admin") {
-        navigate("/admin");
-      } else {
-        navigate("/home");
-      }
-
       setTransaction({
         selectedProduct: "",
         quantity: 1,
@@ -136,8 +137,13 @@ export default function AdminDashboard() {
   };
 
   const handleLogout = () => {
+    // Clear all auth data
     localStorage.removeItem("token");
-    navigate("/login");
+    localStorage.removeItem("role");
+    localStorage.removeItem("userId");
+    // Remove auth header
+    delete api.defaults.headers.common["Authorization"];
+    navigate("/login/admin");
   };
 
   // Render UI Components

@@ -1,35 +1,59 @@
-// src/pages/Login.jsx
 import { motion } from "framer-motion";
-import { Link } from "react-router-dom";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api/axios";
 
-export default function Login() {
+export default function LoginAdmin() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
-  const handleLogin = async (e) => {
+  const handleAdminLogin = async (e) => {
     e.preventDefault();
     try {
+      if (!username || !password) {
+        setErrorMessage("Please enter both username and password");
+        return;
+      }
+
+      console.log("Attempting admin login...");
       const response = await api.post("/auth/login", {
         username,
         password,
-        isAdmin: false,
+        isAdmin: true,
       });
 
-      localStorage.setItem("token", response.data.data.token);
-      localStorage.setItem("userId", response.data.data.user.id);
-      localStorage.setItem("role", response.data.data.user.role);
+      console.log("Login response:", response.data);
 
-      navigate("/home");
+      if (!response.data?.success) {
+        setErrorMessage(response.data?.message || "Login failed");
+        return;
+      }
+
+      const { token, user } = response.data.data;
+
+      if (!user || user.role !== "admin") {
+        setErrorMessage("Unauthorized: Admin access only");
+        return;
+      }
+
+      // Store auth data
+      localStorage.setItem("token", token);
+      localStorage.setItem("role", user.role);
+      localStorage.setItem("userId", user.id);
+
+      // Set auth header
+      api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+
+      // Navigate to admin dashboard
+      navigate("/admin", { replace: true });
     } catch (error) {
+      console.error("Login error:", error);
       setErrorMessage(
         error.response?.data?.message ||
-          "Login failed. Please check your credentials."
+          "Login failed: Please check your credentials."
       );
     }
   };
@@ -47,7 +71,6 @@ export default function Login() {
         exit={{ opacity: 0, x: 100 }}
         transition={{ duration: 0.6 }}
       >
-        {/* Left - Image */}
         <motion.div
           className="w-1/2 bg-gray-100 flex items-center justify-center p-4"
           initial={{ x: -100 }}
@@ -57,13 +80,10 @@ export default function Login() {
           <img src="/bike.png" alt="Bike" className="w-3/4" />
         </motion.div>
 
-        {/* Right - Form */}
         <div className="w-1/2 p-8">
           <h1 className="text-2xl font-bold mb-6 text-center">TOKO ILHAM</h1>
-          <p className="mb-4 text-lg font-semibold text-center">
-            Toko Serba Ada, Fotocopy, dan Alat Tulis Kantor
-          </p>
-          <form onSubmit={handleLogin} className="space-y-4">
+          <p className="mb-4 text-lg font-semibold text-center">Admin Login</p>
+          <form onSubmit={handleAdminLogin} className="space-y-4">
             {errorMessage && (
               <div className="bg-red-100 text-red-600 p-2 rounded text-sm">
                 {errorMessage}
@@ -75,7 +95,7 @@ export default function Login() {
                 type="text"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                placeholder="Enter your username"
+                placeholder="Enter admin username"
                 className="w-full border p-2 rounded"
                 required
               />
@@ -87,7 +107,7 @@ export default function Login() {
                   type={showPassword ? "text" : "password"}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Enter your password"
+                  placeholder="Enter password"
                   className="w-full border p-2 rounded"
                   required
                 />
@@ -100,27 +120,13 @@ export default function Login() {
                 </button>
               </div>
             </div>
-            <div className="flex items-center justify-between">
-              <label className="flex items-center text-sm">
-                <input type="checkbox" className="mr-2" /> Remember Me
-              </label>
-              <a href="#" className="text-sm text-blue-600">
-                Forgot Password?
-              </a>
-            </div>
             <button
               type="submit"
               className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition"
             >
-              Login
+              Login as Admin
             </button>
           </form>
-          <p className="mt-4 text-sm text-center">
-            Don't have an account?{" "}
-            <Link to="/register" className="text-blue-600 font-semibold">
-              Sign Up
-            </Link>
-          </p>
         </div>
       </motion.div>
     </div>
