@@ -9,21 +9,35 @@ export default function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-  const [showPassword, setShowPassword] = useState(false); // State for password visibility
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
+  const isAdminLogin = window.location.pathname === "/login/admin";
 
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const response = await api.post("/api/auth/login", {
+      const response = await api.post("/auth/login", {
         username,
         password,
+        isAdmin: isAdminLogin,
       });
+
       localStorage.setItem("token", response.data.data.token);
       localStorage.setItem("userId", response.data.data.user.id);
-      navigate("/home");
+      localStorage.setItem("role", response.data.data.user.role);
+
+      // Redirect based on role
+      if (response.data.data.user.role === "admin") {
+        navigate("/admin");
+        window.location.reload(); // Force reload to update auth state
+      } else {
+        navigate("/home");
+      }
     } catch (error) {
-      setErrorMessage("Username or password is incorrect. Please try again.");
+      setErrorMessage(
+        error.response?.data?.message ||
+          "Login failed. Please check your credentials."
+      );
     }
   };
 
@@ -54,10 +68,11 @@ export default function Login() {
         <div className="w-1/2 p-8">
           <h1 className="text-2xl font-bold mb-6 text-center">TOKO ILHAM</h1>
           <p className="mb-4 text-lg font-semibold text-center">
-            Toko Serba Ada, Fotocopy, dan Alat Tulis Kantor
+            {isAdminLogin
+              ? "Admin Login"
+              : "Toko Serba Ada, Fotocopy, dan Alat Tulis Kantor"}
           </p>
           <form onSubmit={handleLogin} className="space-y-4">
-            {/* Display error message */}
             {errorMessage && (
               <div className="bg-red-100 text-red-600 p-2 rounded text-sm">
                 {errorMessage}
@@ -94,27 +109,31 @@ export default function Login() {
                 </button>
               </div>
             </div>
-            <div className="flex items-center justify-between">
-              <label className="flex items-center text-sm">
-                <input type="checkbox" className="mr-2" /> Remember Me
-              </label>
-              <a href="#" className="text-sm text-blue-600">
-                Forgot Password?
-              </a>
-            </div>
+            {!isAdminLogin && (
+              <div className="flex items-center justify-between">
+                <label className="flex items-center text-sm">
+                  <input type="checkbox" className="mr-2" /> Remember Me
+                </label>
+                <a href="#" className="text-sm text-blue-600">
+                  Forgot Password?
+                </a>
+              </div>
+            )}
             <button
               type="submit"
               className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition"
             >
-              Login
+              {isAdminLogin ? "Admin Login" : "Login"}
             </button>
           </form>
-          <p className="mt-4 text-sm text-center">
-            Don't have an account?{" "}
-            <Link to="/register" className="text-blue-600 font-semibold">
-              Sign Up
-            </Link>
-          </p>
+          {!isAdminLogin && (
+            <p className="mt-4 text-sm text-center">
+              Don't have an account?{" "}
+              <Link to="/register" className="text-blue-600 font-semibold">
+                Sign Up
+              </Link>
+            </p>
+          )}
         </div>
       </motion.div>
     </div>

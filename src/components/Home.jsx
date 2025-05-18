@@ -15,7 +15,7 @@ export default function Home() {
     try {
       setLoading(true);
       setError(null);
-      const response = await api.get("/api/products", {
+      const response = await api.get("/products", {
         params: { search: query },
       });
       setProducts(response.data.data || []);
@@ -30,7 +30,7 @@ export default function Home() {
   const addToWishlist = async (productId) => {
     try {
       const userId = localStorage.getItem("userId"); // Assume user ID is stored in localStorage
-      const response = await api.post("/api/wishlists/add", {
+      const response = await api.post("/wishlists/add", {
         UserID: userId,
         ProductID: productId,
       });
@@ -50,7 +50,7 @@ export default function Home() {
         return;
       }
 
-      await api.post("/api/cart/add", {
+      await api.post("/cart/add", {
         UserID: userId,
         ProductID: productId,
         Quantity: 1,

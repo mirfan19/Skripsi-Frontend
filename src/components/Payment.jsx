@@ -31,7 +31,7 @@ export default function Payment() {
 
     try {
       // Create payment
-      const response = await api.post("/api/payments", {
+      const response = await api.post("/payments", {
         OrderID: orderDetails.orderId,
         PaymentMethod: paymentMethod,
         Amount: parseFloat(orderDetails.totalAmount),

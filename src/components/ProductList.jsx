@@ -21,7 +21,7 @@ export default function ProductList() {
     try {
       setLoading(true);
       setError(null);
-      const response = await api.get("/api/products", {
+      const response = await api.get("/products", {
         params: { search: query },
       });
       setProducts(response.data.data || []);

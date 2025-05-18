@@ -18,7 +18,8 @@ export default function Cart() {
         return;
       }
 
-      const response = await api.get(`/api/cart/user/${userId}`);
+      // Correct the API endpoint
+      const response = await api.get(`/cart/user/${userId}`); // Removed extra `/api`
       if (response.data.success) {
         setCartItems(response.data.data);
       }

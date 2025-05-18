@@ -23,7 +23,8 @@ export default function Checkout() {
         return;
       }
 
-      const response = await api.get(`/api/cart/user/${userId}`);
+      // Correct the API endpoint
+      const response = await api.get(`/cart/user/${userId}`); // Removed extra `/api`
       if (response.data.success) {
         setCartItems(response.data.data);
       }
@@ -71,7 +72,7 @@ export default function Checkout() {
         return;
       }
 
-      const response = await api.post("/api/orders", {
+      const response = await api.post("/orders", {
         UserID: parseInt(userId),
         OrderItems: cartItems.map((item) => ({
           ProductID: item.Product.ProductID,
@@ -86,7 +87,7 @@ export default function Checkout() {
       if (response.data.success) {
         try {
           // Clear cart after successful order creation
-          await api.delete(`/api/cart/user/${userId}`);
+          await api.delete(`/cart/user/${userId}`);
         } catch (cartError) {
           console.error("Error clearing cart:", cartError);
           // Continue even if cart clearing fails

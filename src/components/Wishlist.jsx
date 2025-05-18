@@ -21,7 +21,7 @@ export default function Wishlist() {
         return;
       }
 
-      const response = await api.get(`/api/wishlists/user/${userId}`);
+      const response = await api.get(`/wishlists/user/${userId}`);
 
       if (response.data.success) {
         setWishlist(response.data.data);
