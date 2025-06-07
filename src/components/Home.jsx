@@ -92,7 +92,6 @@ export default function Home() {
           </button>
         </div>
       </section>
-
       {/* Products Section */}
       <section className="py-12 px-8">
         <h2 className="text-2xl font-bold mb-6">Produk</h2>
@@ -165,7 +164,6 @@ export default function Home() {
           </div>
         )}
       </section>
-
       {/* About Section */}
       <section className="bg-white py-12 px-8">
         <h2 className="text-2xl font-bold mb-6">Tentang Kami</h2>
@@ -175,7 +173,6 @@ export default function Home() {
           memberikan pelayanan terbaik kepada pelanggan kami.
         </p>
       </section>
-
       {/* Services Section */}
       <section className="py-12 px-8">
         <h2 className="text-2xl font-bold mb-6">Pelayanan</h2>
@@ -193,20 +190,44 @@ export default function Home() {
             </p>
           </div>
         </div>
-      </section>
-
+      </section>{" "}
       {/* Location Section */}
       <section className="bg-white py-12 px-8">
         <h2 className="text-2xl font-bold mb-6">Lokasi</h2>
         <p className="text-gray-600 mb-4">
           Kunjungi toko kami di alamat berikut:
         </p>
-        <div className="w-full h-64 bg-gray-200 rounded">
-          {/* Replace with an actual map or embed */}
-          <p className="text-center text-gray-600 pt-24">Map Placeholder</p>
+        <div className="mb-4">
+          <p className="text-gray-700">
+            Jl. Pahlawan No.25 A, Empang, Kota Bogor Selatan, Kota Bogor, Jawa
+            Barat 16132
+          </p>
+        </div>
+        <div className="w-full h-96 rounded overflow-hidden shadow-lg">
+          {" "}
+          <iframe
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3980.0997074520583!2d119.93090117450498!3d-3.999920944612649!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2d95c4fa1e23e255%3A0x3815a58d9dabe896!2sToko%20ILHAM!5e0!3m2!1sid!2sid!4v1749280552961!5m2!1sid!2sid"
+            width="100%"
+            height="100%"
+            style={{ border: 0 }}
+            allowFullScreen=""
+            loading="lazy"
+            referrerPolicy="no-referrer-when-downgrade"
+            title="Toko Ilham Location"
+            className="rounded"
+          ></iframe>
+        </div>
+        <div className="mt-4 flex justify-center">
+          <a
+            href="https://maps.app.goo.gl/u1H2cHAgWtyPizjGA"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition inline-flex items-center"
+          >
+            Buka di Google Maps
+          </a>
         </div>
       </section>
-
       {/* Footer */}
       <footer className="bg-blue-600 text-white py-4 px-8 text-center">
         <p>&copy; 2025 TOKO ILHAM. All rights reserved.</p>

@@ -20,6 +20,12 @@ import Payment from "./components/Payment";
 import OrderConfirmation from "./components/OrderConfirmation";
 import AdminDashboard from "./components/AdminDashboard";
 import LoginAdmin from "./components/LoginAdmin";
+import ManajemenProduk from "./components/ManajemenProduk";
+import AddProduct from "./components/AddProduct";
+import EditProduct from "./components/EditProduct";
+import Profile from "./components/Profile";
+import ManajemenPesanan from "./components/ManajemenPesanan";
+// import LaporanKeuangan from "./components/LaporanKeuangan";
 
 function AnimatedRoutes() {
   const location = useLocation();
@@ -39,6 +45,15 @@ function AnimatedRoutes() {
         <Route path="/checkout" element={<Checkout />} />
         <Route path="/payment" element={<Payment />} />
         <Route path="/order-confirmation" element={<OrderConfirmation />} />
+        {/* Protected Profile route */}
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          }
+        />
         {/* Protected customer dashboard */}
         <Route
           path="/dashboard"
@@ -53,7 +68,14 @@ function AnimatedRoutes() {
           path="/admin/*"
           element={
             <ProtectedRoute adminOnly>
-              <AdminDashboard />
+              <Routes>
+                <Route path="/" element={<AdminDashboard />} />
+                <Route path="/products" element={<ManajemenProduk />} />
+                <Route path="/products/add" element={<AddProduct />} />
+                <Route path="/products/edit/:id" element={<EditProduct />} />
+                <Route path="/orders" element={<ManajemenPesanan />} />
+                {/* <Route path="/reports" element={<LaporanKeuangan />} /> */}
+              </Routes>
             </ProtectedRoute>
           }
         />
