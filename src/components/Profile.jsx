@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import Header from "./Header";
 import api from "../api/axios";
 
@@ -16,6 +16,7 @@ export default function Profile() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [successMessage, setSuccessMessage] = useState("");
+  const [orderHistory, setOrderHistory] = useState([]);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -43,7 +44,19 @@ export default function Profile() {
       }
     };
 
+    const fetchOrderHistory = async () => {
+      try {
+        const userId = localStorage.getItem("userId");
+        if (!userId) return;
+        const response = await api.get(`/users/${userId}/orders`);
+        setOrderHistory(response.data.data || []);
+      } catch (err) {
+        // Optionally handle error
+      }
+    };
+
     fetchUserData();
+    fetchOrderHistory();
   }, [navigate]);
 
   const handleInputChange = (e) => {
@@ -200,6 +213,52 @@ export default function Profile() {
                   {userData.Address || "Not provided"}
                 </p>
               </div>
+            </div>
+          )}
+
+          {/* Order History Section */}
+          {orderHistory.length > 0 && (
+            <div className="mt-10">
+              <h2 className="text-xl font-bold mb-4">Riwayat Pesanan</h2>
+              <table className="min-w-full bg-white rounded shadow">
+                <thead>
+                  <tr>
+                    <th className="px-4 py-2">Order ID</th>
+                    <th className="px-4 py-2">Tanggal</th>
+                    <th className="px-4 py-2">Total</th>
+                    <th className="px-4 py-2">Status</th>
+                    <th className="px-4 py-2">Detail Produk</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {orderHistory.map((order) => (
+                    <tr key={order.OrderID} className="align-top">
+                      <td className="px-4 py-2">#{order.OrderID}</td>
+                      <td className="px-4 py-2">
+                        {new Date(order.OrderDate).toLocaleDateString()}
+                      </td>
+                      <td className="px-4 py-2">
+                        Rp {order.TotalAmount?.toLocaleString("id-ID")}
+                      </td>
+                      <td className="px-4 py-2">{order.Status}</td>
+                      <td className="px-4 py-2">
+                        <ul className="list-disc pl-4">
+                          {order.OrderItems && order.OrderItems.length > 0 ? (
+                            order.OrderItems.map((item) => (
+                              <li key={item.OrderItemID}>
+                                {item.Product?.ProductName} x {item.Quantity} @
+                                Rp. {Number(item.Price).toLocaleString("id-ID")}
+                              </li>
+                            ))
+                          ) : (
+                            <li>Tidak ada produk</li>
+                          )}
+                        </ul>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           )}
         </div>

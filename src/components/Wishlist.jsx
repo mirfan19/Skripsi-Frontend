@@ -42,22 +42,22 @@ export default function Wishlist() {
         navigate("/login");
         return;
       }
-
       const response = await api.delete(
-        `/api/wishlists/user/${userId}/product/${productId}`
+        `/wishlists/user/${userId}/product/${productId}`
       );
-
       if (response.data.success) {
-        // Update the wishlist state by filtering out the removed item
         setWishlist((prevWishlist) =>
-          prevWishlist.filter((item) => item.ProductID !== productId)
+          prevWishlist.filter((item) => item.Product.ProductID !== productId)
         );
+        alert("Item removed from wishlist!");
       } else {
-        alert("Failed to remove item from wishlist");
+        alert(response.data.message || "Failed to remove item from wishlist");
       }
     } catch (error) {
       console.error("Error removing from wishlist:", error);
-      alert("Failed to remove item from wishlist");
+      alert(
+        error.response?.data?.message || "Failed to remove item from wishlist"
+      );
     }
   };
 
@@ -109,11 +109,17 @@ export default function Wishlist() {
               <img
                 src={
                   item.Product.ImageURL
-                    ? `http://localhost:3000${item.Product.ImageURL}`
+                    ? item.Product.ImageURL.startsWith("http")
+                      ? item.Product.ImageURL
+                      : `http://localhost:3000${item.Product.ImageURL}`
                     : "/product-placeholder.png"
                 }
                 alt={item.Product.ProductName}
                 className="w-full h-32 object-cover mb-2 rounded"
+                onError={(e) => {
+                  e.target.onerror = null;
+                  e.target.src = "/product-placeholder.png";
+                }}
               />
               <h3 className="font-semibold text-lg">
                 {item.Product.ProductName}

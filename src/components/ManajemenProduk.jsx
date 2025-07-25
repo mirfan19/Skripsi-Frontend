@@ -87,6 +87,9 @@ export default function ManajemenProduk() {
                     Nama Produk
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Gambar
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Harga
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -105,6 +108,22 @@ export default function ManajemenProduk() {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       {product.ProductName}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      {product.ImageURL ? (
+                        <img
+                          src={
+                            product.ImageURL.startsWith("http")
+                              ? product.ImageURL
+                              : `http://localhost:3000${product.ImageURL}`
+                          }
+                          alt={product.ProductName}
+                          className="h-16 w-16 object-cover rounded shadow"
+                          onError={(e) => (e.target.style.display = "none")}
+                        />
+                      ) : (
+                        <span className="text-gray-400 italic">No image</span>
+                      )}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       Rp {product.Price.toLocaleString("id-ID")}

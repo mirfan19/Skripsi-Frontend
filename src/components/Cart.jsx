@@ -37,21 +37,48 @@ export default function Cart() {
 
   const updateQuantity = async (cartId, newQuantity) => {
     try {
-      await api.put(`/api/cart/${cartId}`, { Quantity: newQuantity });
+      await api.put(`/cart/${cartId}`, { Quantity: newQuantity });
       fetchCart(); // Refresh cart after update
     } catch (error) {
       console.error("Error updating quantity:", error);
-      alert("Failed to update quantity");
+      alert(error.response?.data?.message || "Failed to update quantity");
     }
   };
 
   const removeItem = async (cartId) => {
     try {
-      await api.delete(`/api/cart/${cartId}`);
-      fetchCart(); // Refresh cart after removal
+      const response = await api.delete(`/cart/${cartId}`);
+      if (response.data.success) {
+        alert("Item removed from cart!");
+        fetchCart();
+      } else {
+        alert(response.data.message || "Failed to remove item from cart");
+      }
     } catch (error) {
-      console.error("Error removing item:", error);
-      alert("Failed to remove item");
+      alert(error.response?.data?.message || "Failed to remove item from cart");
+    }
+  };
+
+  const addToCart = async (productId, quantity = 1) => {
+    try {
+      const userId = localStorage.getItem("userId");
+      if (!userId) {
+        navigate("/login");
+        return;
+      }
+      const response = await api.post("/cart/add", {
+        UserID: userId,
+        ProductID: productId,
+        Quantity: quantity,
+      });
+      if (response.data.success) {
+        alert("Product added to cart!");
+        fetchCart();
+      } else {
+        alert(response.data.message || "Failed to add product to cart");
+      }
+    } catch (error) {
+      alert(error.response?.data?.message || "Failed to add product to cart");
     }
   };
 
@@ -156,11 +183,17 @@ export default function Cart() {
                             <img
                               src={
                                 item.Product.ImageURL
-                                  ? `http://localhost:3000${item.Product.ImageURL}`
+                                  ? item.Product.ImageURL.startsWith("http")
+                                    ? item.Product.ImageURL
+                                    : `http://localhost:3000${item.Product.ImageURL}`
                                   : "/product-placeholder.png"
                               }
                               alt={item.Product.ProductName}
                               className="w-16 h-16 object-cover rounded mr-4"
+                              onError={(e) => {
+                                e.target.onerror = null;
+                                e.target.src = "/product-placeholder.png";
+                              }}
                             />
                             <span>{item.Product.ProductName}</span>
                           </td>

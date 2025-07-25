@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import api from "../api/axios";
 
 export default function ManajemenPesanan() {
@@ -60,8 +60,52 @@ export default function ManajemenPesanan() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      <div className="container mx-auto px-4 py-8">
+    <div className="flex min-h-screen bg-gray-100">
+      {/* Sidebar */}
+      <div className="w-64 bg-blue-600 min-h-screen flex flex-col relative">
+        <div className="p-4 flex-1">
+          <h1 className="text-white text-2xl font-bold mb-8">TOKO ILHAM</h1>
+          <nav className="space-y-2">
+            <Link
+              to="/admin"
+              className="block py-2.5 px-4 rounded text-white hover:bg-blue-700"
+            >
+              Dashboard
+            </Link>
+            <Link
+              to="/admin/products"
+              className="block py-2.5 px-4 rounded text-white hover:bg-blue-700"
+            >
+              Manajemen Produk
+            </Link>
+            <Link
+              to="/admin/orders"
+              className="block py-2.5 px-4 rounded bg-blue-700 text-white"
+            >
+              Manajemen Pesanan
+            </Link>
+            <Link
+              to="/admin/reports"
+              className="block py-2.5 px-4 rounded text-white hover:bg-blue-700"
+            >
+              Laporan Keuangan
+            </Link>
+          </nav>
+        </div>
+        <button
+          onClick={() => {
+            localStorage.removeItem("token");
+            localStorage.removeItem("role");
+            navigate("/login/admin");
+          }}
+          className="w-[90%] mb-4 mx-auto block py-3 bg-red-500 text-white font-bold rounded-xl shadow transition-all duration-200 hover:bg-red-600 focus:outline-none text-lg"
+        >
+          Log out
+        </button>
+      </div>
+
+      {/* Main Content */}
+      <div className="flex-1 p-8">
         <div className="bg-white rounded-lg shadow-lg p-6">
           <div className="flex justify-between items-center mb-6">
             <h1 className="text-2xl font-bold">Manajemen Pesanan</h1>
@@ -137,16 +181,6 @@ export default function ManajemenPesanan() {
                       >
                         Detail
                       </button>
-                      {order.Status !== "Selesai" && (
-                        <button
-                          onClick={() =>
-                            handleStatusUpdate(order.OrderID, "Selesai")
-                          }
-                          className="text-green-600 hover:text-green-800 mx-2"
-                        >
-                          Selesai
-                        </button>
-                      )}
                     </td>
                   </tr>
                 ))}

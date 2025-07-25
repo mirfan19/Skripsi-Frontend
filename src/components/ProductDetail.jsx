@@ -15,10 +15,8 @@ export default function ProductDetail() {
   const fetchProductDetail = async () => {
     try {
       setLoading(true);
-      const response = await api.get(`/products/detail/${id}`);
-      if (response.data.success) {
-        setProduct(response.data.data);
-      }
+      const response = await api.get(`/products/${id}`);
+      setProduct(response.data);
     } catch (error) {
       setError("Failed to load product details");
       console.error("Error:", error);
@@ -45,15 +43,22 @@ export default function ProductDetail() {
         navigate("/login");
         return;
       }
-
-      await api.post("/api/wishlists/add", {
+      const response = await api.post("/wishlists/add", {
         UserID: userId,
         ProductID: product.ProductID,
       });
-      alert("Product added to wishlist!");
+      if (response.data.success) {
+        alert("Product added to wishlist!");
+      } else {
+        alert(response.data.message || "Failed to add product to wishlist.");
+      }
     } catch (error) {
       console.error("Error adding to wishlist:", error);
-      alert("Failed to add product to wishlist.");
+      alert(
+        error.response?.data?.message ||
+          error.message ||
+          "Failed to add product to wishlist."
+      );
     }
   };
 
@@ -66,10 +71,10 @@ export default function ProductDetail() {
         return;
       }
 
-      await api.post("/api/cart/add", {
+      await api.post("/cart/add", {
         UserID: userId,
         ProductID: productId,
-        Quantity: 1,
+        Quantity: quantity, // Use the selected quantity
       });
 
       alert("Product added to cart!");
@@ -112,11 +117,17 @@ export default function ProductDetail() {
               <img
                 src={
                   product.ImageURL
-                    ? `http://localhost:3000${product.ImageURL}`
+                    ? product.ImageURL.startsWith("http")
+                      ? product.ImageURL
+                      : `http://localhost:3000${product.ImageURL}`
                     : "/product-placeholder.png"
                 }
                 alt={product.ProductName}
                 className="w-full h-auto object-contain rounded-lg"
+                onError={(e) => {
+                  e.target.onerror = null;
+                  e.target.src = "/product-placeholder.png";
+                }}
               />
             </div>
 

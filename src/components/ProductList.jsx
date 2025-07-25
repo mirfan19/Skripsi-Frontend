@@ -79,7 +79,9 @@ export default function ProductList() {
               <img
                 src={
                   product.ImageURL
-                    ? `http://localhost:3000${product.ImageURL}`
+                    ? product.ImageURL.startsWith("http")
+                      ? product.ImageURL
+                      : `http://localhost:3000${product.ImageURL}`
                     : "/product-placeholder.png"
                 }
                 alt={product.ProductName}

@@ -244,9 +244,19 @@ export default function EditProduct() {
                 {currentImage && (
                   <div className="mb-2">
                     <img
-                      src={currentImage}
+                      src={
+                        currentImage
+                          ? currentImage.startsWith("http")
+                            ? currentImage
+                            : `http://localhost:3000${currentImage}`
+                          : ""
+                      }
                       alt="Current product"
                       className="w-32 h-32 object-cover rounded"
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = "/product-placeholder.png";
+                      }}
                     />
                   </div>
                 )}
