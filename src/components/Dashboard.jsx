@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import api from "../api/axios";
+import MonthlyIncomeChart from "./MonthlyIncomeChart";
 
 export default function Dashboard() {
   const [userData, setUserData] = useState(null);
@@ -32,7 +33,9 @@ export default function Dashboard() {
             <h2 className="text-xl font-semibold mb-4">
               Welcome, {userData.username}
             </h2>
-            {/* Add more dashboard content here */}
+            <div className="mt-8">
+              <MonthlyIncomeChart />
+            </div>
           </div>
         ) : (
           <p>Loading...</p>

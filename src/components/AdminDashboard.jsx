@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import api from "../api/axios";
+import MonthlyIncomeChart from "./MonthlyIncomeChart";
 
 export default function AdminDashboard() {
   const navigate = useNavigate();
@@ -206,126 +207,8 @@ export default function AdminDashboard() {
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-6">
-          {/* Transaction Section */}
-          <div className="bg-white p-6 rounded-lg shadow">
-            <h2 className="text-xl font-semibold mb-4">Scan Product</h2>
-            <div className="flex gap-4 mb-4">
-              <input
-                type="text"
-                value={transaction.selectedProduct}
-                onChange={(e) =>
-                  setTransaction((prev) => ({
-                    ...prev,
-                    selectedProduct: e.target.value,
-                  }))
-                }
-                className="flex-1 p-2 border rounded"
-                placeholder="Scan atau cari produk..."
-              />
-              <input
-                type="number"
-                value={transaction.quantity}
-                onChange={(e) =>
-                  setTransaction((prev) => ({
-                    ...prev,
-                    quantity: e.target.value,
-                  }))
-                }
-                className="w-20 p-2 border rounded"
-                min="1"
-              />
-              <button
-                onClick={() => handleScanProduct(transaction.selectedProduct)}
-                className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-              >
-                Tambah
-              </button>
-            </div>
-
-            <div className="border rounded max-h-96 overflow-y-auto mb-4">
-              <table className="w-full">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th className="p-2 text-left">Produk</th>
-                    <th className="p-2 text-right">Qty</th>
-                    <th className="p-2 text-right">Harga</th>
-                    <th className="p-2 text-right">Total</th>
-                    <th className="p-2"></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {transaction.cart.map((item, index) => (
-                    <tr key={index} className="border-t">
-                      <td className="p-2">{item.name}</td>
-                      <td className="p-2 text-right">{item.quantity}</td>
-                      <td className="p-2 text-right">
-                        Rp. {item.price.toLocaleString("id-ID")}
-                      </td>
-                      <td className="p-2 text-right">
-                        Rp.{" "}
-                        {(item.price * item.quantity).toLocaleString("id-ID")}
-                      </td>
-                      <td className="p-2 text-center">
-                        <button
-                          onClick={() => handleRemoveItem(index)}
-                          className="text-red-500 hover:text-red-700"
-                        >
-                          ×
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          {/* Payment Section */}
-          <div className="bg-white p-6 rounded-lg shadow">
-            <h2 className="text-xl font-semibold mb-4">Pembayaran</h2>
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  Total Belanja
-                </label>
-                <div className="text-2xl font-bold">
-                  Rp. {transaction.totalBelanja.toLocaleString("id-ID")}
-                </div>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  Pembayaran
-                </label>
-                <input
-                  type="number"
-                  value={transaction.pembayaran}
-                  onChange={(e) =>
-                    handlePembayaranChange(parseFloat(e.target.value))
-                  }
-                  className="w-full p-2 border rounded"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  Kembalian
-                </label>
-                <div className="text-2xl font-bold text-green-600">
-                  Rp. {transaction.kembalian.toLocaleString("id-ID")}
-                </div>
-              </div>
-              <button
-                onClick={handleSimpanTransaksi}
-                disabled={
-                  !transaction.cart.length ||
-                  transaction.pembayaran < transaction.totalBelanja
-                }
-                className="w-full py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:bg-gray-400"
-              >
-                Simpan & Cetak
-              </button>
-            </div>
-          </div>
+        <div className="bg-white p-6 rounded-lg shadow mt-8">
+          <MonthlyIncomeChart />
         </div>
       </main>
     </div>
