@@ -1,46 +1,66 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import api from "../api/axios";
+import { useNavigate, useParams } from "react-router-dom";
+import api from "../../api/axios";
 import AdminSidebar from "./AdminSidebar";
 
-export default function AddProduct() {
+export default function EditProduct() {
+  const { id } = useParams();
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     ProductName: "",
     Description: "",
     Price: "",
     StockQuantity: "",
-    Category: "",
-    SupplierID: "", // Add this
+    SupplierID: "",
     Image: null,
   });
-  const [suppliers, setSuppliers] = useState([]); // Add this
-  const [loading, setLoading] = useState(false);
+  const [suppliers, setSuppliers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
-
+  const [currentImage, setCurrentImage] = useState("");
   useEffect(() => {
-    const fetchSuppliers = async () => {
+    const fetchData = async () => {
       try {
-        const response = await api.get("/suppliers");
-        console.log("Suppliers fetched:", response.data);
-        setSuppliers(response.data);
+        const [productResponse, supplierResponse] = await Promise.all([
+          api.get(`/admin/products/${id}`),
+          api.get("/admin/suppliers"),
+        ]);
+
+        const product = productResponse.data;
+        setFormData({
+          ProductName: product.ProductName,
+          Description: product.Description,
+          Price: product.Price.toString(),
+          StockQuantity: product.StockQuantity.toString(),
+          SupplierID: product.SupplierID?.toString() || "",
+          Image: null,
+        });
+        setCurrentImage(
+          product.ImageURL ? `http://localhost:3000${product.ImageURL}` : ""
+        );
+        setSuppliers(supplierResponse.data);
+        setLoading(false);
       } catch (error) {
-        console.error("Error fetching suppliers:", error);
-        setError("Failed to load suppliers");
+        console.error("Error fetching data:", error);
+        setError("Failed to fetch product details");
+        setLoading(false);
       }
     };
 
-    fetchSuppliers();
-  }, []);
+    fetchData();
+  }, [id]);
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
-    if (name === "Image") {
+    if (name === "image") {
+      console.log("Image file selected:", files[0]?.name);
       setFormData((prev) => ({
         ...prev,
-        Image: files[0],
+        Image: files[0], // Keep using Image in state to maintain consistency
       }));
     } else {
+      console.log(`Field ${name} changed:`, value);
       setFormData((prev) => ({
         ...prev,
         [name]: value,
@@ -50,28 +70,42 @@ export default function AddProduct() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
+    setSaving(true);
     setError("");
 
     try {
-      console.log("Form Data:", formData);
-
       const formDataToSend = new FormData();
-      Object.keys(formData).forEach((key) => {
-        if (key === "Image" && formData[key]) {
-          formDataToSend.append("Image", formData[key]);
-        } else {
-          formDataToSend.append(key, formData[key]);
-        }
-      });
 
-      // Debug log
-      console.log("FormData entries:");
-      for (let pair of formDataToSend.entries()) {
-        console.log(pair[0] + ": " + pair[1]);
+      // Sanitize price: replace comma with dot, remove invalid chars
+      let sanitizedPrice = formData.Price;
+      if (typeof sanitizedPrice === "string") {
+        sanitizedPrice = sanitizedPrice
+          .replace(",", ".")
+          .replace(/[^0-9.]/g, "");
       }
 
-      const response = await api.post("/admin/products", formDataToSend, {
+      const fieldsToSend = {
+        ProductName: formData.ProductName,
+        Description: formData.Description,
+        Price: sanitizedPrice,
+        StockQuantity: formData.StockQuantity,
+        SupplierID: formData.SupplierID,
+      };
+
+      Object.entries(fieldsToSend).forEach(([key, value]) => {
+        formDataToSend.append(key, value);
+      });
+
+      if (formData.Image) {
+        formDataToSend.append("image", formData.Image);
+      }
+
+      console.log("Sending form data:", {
+        ...fieldsToSend,
+        image: formData.Image ? formData.Image.name : "No new image",
+      });
+
+      const response = await api.put(`/admin/products/${id}`, formDataToSend, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -80,18 +114,38 @@ export default function AddProduct() {
       if (response.data.success) {
         navigate("/admin/products");
       } else {
-        setError(response.data.message || "Failed to add product");
+        throw new Error(response.data.message || "Failed to update product");
       }
     } catch (error) {
-      console.error("Error submitting form:", error);
-      setError(
-        error.response?.data?.message ||
-          "Failed to add product. Please try again."
-      );
+      console.error("Error updating product:", error);
+      let errorMessage = "Failed to update product. Please try again.";
+      if (typeof error === "string") {
+        errorMessage = error;
+      } else if (error instanceof Error) {
+        errorMessage = error.message;
+      } else if (error.response?.data?.message) {
+        errorMessage = error.response.data.message;
+      } else if (error.response?.data?.error) {
+        errorMessage = error.response.data.error;
+      }
+      setError(String(errorMessage));
     } finally {
-      setLoading(false);
+      setSaving(false);
     }
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-100 flex">
+        <AdminSidebar />
+        <main className="flex-1 ml-64 p-8">
+          <div className="flex justify-center items-center h-64">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
+          </div>
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-100 flex">
@@ -99,17 +153,17 @@ export default function AddProduct() {
 
       <main className="flex-1 ml-64 p-8">
         <div className="max-w-2xl mx-auto">
-          <h1 className="text-2xl font-bold mb-6">Tambah Produk Baru</h1>
+          <h1 className="text-2xl font-bold mb-6">Edit Produk</h1>
 
           <form
             onSubmit={handleSubmit}
             className="bg-white rounded-lg shadow p-6"
           >
-            {error && (
+            {error ? (
               <div className="mb-4 bg-red-100 text-red-600 p-3 rounded">
-                {error}
+                {String(error)}
               </div>
-            )}
+            ) : null}
 
             <div className="space-y-4">
               <div>
@@ -125,7 +179,6 @@ export default function AddProduct() {
                   required
                 />
               </div>
-
               <div>
                 <label className="block text-sm font-medium mb-1">
                   Deskripsi
@@ -139,7 +192,6 @@ export default function AddProduct() {
                   required
                 />
               </div>
-
               <div>
                 <label className="block text-sm font-medium mb-1">
                   Harga (Rp)
@@ -154,7 +206,6 @@ export default function AddProduct() {
                   min="0"
                 />
               </div>
-
               <div>
                 <label className="block text-sm font-medium mb-1">
                   Jumlah Stok
@@ -172,20 +223,6 @@ export default function AddProduct() {
 
               <div>
                 <label className="block text-sm font-medium mb-1">
-                  Kategori
-                </label>
-                <input
-                  type="text"
-                  name="Category"
-                  value={formData.Category}
-                  onChange={handleChange}
-                  className="w-full p-2 border rounded"
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium mb-1">
                   Supplier
                 </label>
                 <select
@@ -195,7 +232,7 @@ export default function AddProduct() {
                   className="w-full p-2 border rounded"
                   required
                 >
-                  <option value="">Select a supplier</option>
+                  <option value="">Pilih Supplier</option>
                   {suppliers.map((supplier) => (
                     <option
                       key={supplier.SupplierID}
@@ -206,19 +243,39 @@ export default function AddProduct() {
                   ))}
                 </select>
               </div>
-
               <div>
                 <label className="block text-sm font-medium mb-1">
                   Gambar Produk
                 </label>
+                {currentImage && (
+                  <div className="mb-2">
+                    <img
+                      src={
+                        currentImage
+                          ? currentImage.startsWith("http")
+                            ? currentImage
+                            : `http://localhost:3000${currentImage}`
+                          : ""
+                      }
+                      alt="Current product"
+                      className="w-32 h-32 object-cover rounded"
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = "/product-placeholder.png";
+                      }}
+                    />
+                  </div>
+                )}
                 <input
                   type="file"
-                  name="Image"
+                  name="image"
                   onChange={handleChange}
                   className="w-full p-2 border rounded"
                   accept="image/*"
-                  required
                 />
+                <p className="text-sm text-gray-500 mt-1">
+                  Leave empty to keep current image
+                </p>
               </div>
             </div>
 
@@ -232,10 +289,10 @@ export default function AddProduct() {
               </button>
               <button
                 type="submit"
-                disabled={loading}
+                disabled={saving}
                 className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:bg-blue-300"
               >
-                {loading ? "Menyimpan..." : "Simpan Produk"}
+                {saving ? "Menyimpan..." : "Simpan Perubahan"}
               </button>
             </div>
           </form>

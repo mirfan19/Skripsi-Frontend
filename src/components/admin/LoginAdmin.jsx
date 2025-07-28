@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import api from "../api/axios";
+import api from "../../api/axios";
 
 export default function LoginAdmin() {
   const [username, setUsername] = useState("");
@@ -41,10 +41,8 @@ export default function LoginAdmin() {
 
       // Store auth data
       localStorage.setItem("token", token);
-      localStorage.setItem("role", user.role);
+      localStorage.setItem("role", user.role); // harus "admin"
       localStorage.setItem("userId", user.id);
-
-      // Set auth header
       api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 
       // Navigate to admin dashboard

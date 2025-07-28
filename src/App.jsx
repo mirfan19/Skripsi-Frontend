@@ -6,28 +6,30 @@ import {
   Navigate,
 } from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
-import Login from "./components/Login";
-import Register from "./components/Register";
-import Home from "./components/Home";
+import Login from "./components/customer/Login";
+import Register from "./components/customer/Register";
+import Home from "./components/customer/Home";
 import ProtectedRoute from "./components/ProtectedRoute";
-import Dashboard from "./components/Dashboard";
-import ProductList from "./components/ProductList";
-import Wishlist from "./components/Wishlist";
-import ProductDetail from "./components/ProductDetail";
-import Cart from "./components/Cart";
-import Checkout from "./components/Checkout";
-import Payment from "./components/Payment";
-import OrderConfirmation from "./components/OrderConfirmation";
-import AdminDashboard from "./components/AdminDashboard";
-import LoginAdmin from "./components/LoginAdmin";
-import ManajemenProduk from "./components/ManajemenProduk";
-import AddProduct from "./components/AddProduct";
-import EditProduct from "./components/EditProduct";
-import Profile from "./components/Profile";
-import ManajemenPesanan from "./components/ManajemenPesanan";
-import ManajemenReport from "./components/ManajemenReport";
-import PesananDetail from "./components/PesananDetail";
-import ProfileOrderDetail from "./components/ProfileOrderDetail";
+import Dashboard from "./components/customer/Dashboard";
+import ProductList from "./components/customer/ProductList";
+import Wishlist from "./components/customer/Wishlist";
+import ProductDetail from "./components/customer/ProductDetail";
+import Cart from "./components/customer/Cart";
+import Checkout from "./components/customer/Checkout";
+import Payment from "./components/customer/Payment";
+import OrderConfirmation from "./components/customer/OrderConfirmation";
+import Profile from "./components/customer/Profile";
+import PesananDetail from "./components/customer/PesananDetail";
+import ProfileOrderDetail from "./components/customer/ProfileOrderDetail";
+
+// Admin imports
+import AdminDashboard from "./components/admin/AdminDashboard";
+import LoginAdmin from "./components/admin/LoginAdmin";
+import ManajemenProduk from "./components/admin/ManajemenProduk";
+import AddProduct from "./components/admin/AddProduct";
+import EditProduct from "./components/admin/EditProduct";
+import ManajemenPesanan from "./components/admin/ManajemenPesanan";
+import ManajemenReport from "./components/admin/ManajemenReport";
 
 function AnimatedRoutes() {
   const location = useLocation();

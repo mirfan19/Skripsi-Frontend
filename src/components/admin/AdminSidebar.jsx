@@ -1,6 +1,9 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import api from "../../api/axios";
 
 export default function AdminSidebar() {
+  const navigate = useNavigate();
+
   const handleLogout = () => {
     // Clear all auth data
     localStorage.removeItem("token");

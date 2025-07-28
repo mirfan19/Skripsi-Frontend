@@ -2,7 +2,7 @@
 import { motion } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom"; // Import useNavigate
 import { useState } from "react";
-import api from "../api/axios";
+import api from "../../api/axios";
 
 export default function Register() {
   const [email, setEmail] = useState("");

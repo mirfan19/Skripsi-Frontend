@@ -101,9 +101,10 @@ export default function Header({ onSearch }) {
                 <FaUser className="text-2xl" />
               </button>
               <div
-                className={`absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 ${
+                className={`absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 ${
                   isDropdownOpen ? "block" : "hidden"
                 }`}
+                style={{ minWidth: 180 }}
               >
                 <Link
                   to="/profile"
