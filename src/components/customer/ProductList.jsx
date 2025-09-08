@@ -85,7 +85,7 @@ export default function ProductList() {
                     : "/product-placeholder.png"
                 }
                 alt={product.ProductName}
-                className="w-full h-32 object-cover mb-2 rounded"
+                className="w-full h-40 md:h-56 lg:h-64 max-h-64 object-cover object-center mb-2 rounded"
                 onError={(e) => {
                   e.target.onerror = null;
                   e.target.src = "/product-placeholder.png";
