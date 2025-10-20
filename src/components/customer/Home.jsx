@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { FaHeart } from "react-icons/fa"; // Import wishlist icon
+import { FaHeart } from "react-icons/fa";
+import { motion, AnimatePresence } from "framer-motion"; // Tambahkan ini
 import api from "../../api/axios";
 import Header from "./Header";
 
@@ -8,6 +9,11 @@ export default function Home() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [notif, setNotif] = useState({
+    show: false,
+    message: "",
+    type: "success",
+  });
   const navigate = useNavigate();
   const isLoggedIn = !!localStorage.getItem("userId");
 
@@ -27,17 +33,23 @@ export default function Home() {
     }
   };
 
+  // Fungsi untuk menampilkan notifikasi
+  const showNotif = (message, type = "success") => {
+    setNotif({ show: true, message, type });
+    setTimeout(() => setNotif({ show: false, message: "", type }), 2000);
+  };
+
   const addToWishlist = async (productId) => {
     try {
-      const userId = localStorage.getItem("userId"); // Assume user ID is stored in localStorage
-      const response = await api.post("/wishlists/add", {
+      const userId = localStorage.getItem("userId");
+      await api.post("/wishlists/add", {
         UserID: userId,
         ProductID: productId,
       });
-      alert("Product added to wishlist!");
+      showNotif("Product added to wishlist!", "success");
     } catch (error) {
       console.error("Error adding to wishlist:", error);
-      alert("Failed to add product to wishlist.");
+      showNotif("Failed to add product to wishlist.", "error");
     }
   };
 
@@ -49,17 +61,15 @@ export default function Home() {
         navigate("/login");
         return;
       }
-
       await api.post("/cart/add", {
         UserID: userId,
         ProductID: productId,
         Quantity: 1,
       });
-
-      alert("Product added to cart!");
+      showNotif("Product added to cart!", "success");
     } catch (error) {
       console.error("Error adding to cart:", error);
-      alert("Failed to add product to cart");
+      showNotif("Failed to add product to cart", "error");
     }
   };
 
@@ -74,6 +84,25 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gray-100">
       <Header />
+
+      {/* Notifikasi animasi */}
+      <AnimatePresence>
+        {notif.show && (
+          <motion.div
+            initial={{ y: -60, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: -60, opacity: 0 }}
+            transition={{ duration: 0.4 }}
+            className={`fixed top-6 left-1/2 -translate-x-1/2 z-50 px-6 py-3 rounded shadow-lg font-semibold ${
+              notif.type === "success"
+                ? "bg-blue-600 text-white"
+                : "bg-red-600 text-white"
+            }`}
+          >
+            {notif.message}
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Hero Section */}
       <div
