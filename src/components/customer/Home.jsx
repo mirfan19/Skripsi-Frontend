@@ -220,10 +220,18 @@ export default function Home() {
           <div className="md:w-1/2">
             <h1 className="text-2xl font-bold mb-2">TOKO ILHAM</h1>
             <p className="text-base font-normal">
-              Lorem ipsum dolor sit amet consectetur. Facilisis quis eleifend
-              massa sapien. Cursus dignissim adipiscing natoque enim nisi
-              vulputate purus. Suspendisse nunc vehicula est neque tempor
-              feugiat luctus accumsan. Odio ornare ut risus vestibulum sagittis.
+              Toko Ilham merupakan sebuah toko alat tulis dan kantor (ATK) yang
+              menyediakan berbagai kebutuhan perlengkapan kerja, baik untuk
+              individu maupun perusahaan. Toko ini menjual beragam produk
+              seperti alat tulis, kertas, map, tinta printer, perlengkapan
+              arsip, hingga peralatan kantor seperti stapler, mesin penghancur
+              kertas, dan perlengkapan presentasi. Dengan koleksi barang yang
+              lengkap, Toko Ilham berkomitmen untuk menjadi solusi satu tempat
+              bagi pelanggan yang membutuhkan perlengkapan kantor berkualitas.
+              Selain itu, pelayanan yang ramah dan ketersediaan stok yang
+              terjaga menjadikan Toko Ilham sebagai pilihan utama bagi
+              masyarakat dalam memenuhi kebutuhan administrasi dan operasional
+              kantor.
             </p>
           </div>
           <div className="md:w-1/2 flex justify-center">
@@ -246,8 +254,17 @@ export default function Home() {
           <div className="md:w-1/2 order-1 md:order-2">
             <h2 className="text-xl font-bold mb-2 text-right">Pelayan</h2>
             <p className="text-base font-normal text-right">
-              Lorem ipsum dolor sit amet consectetur. Morbi at tincidunt enim
-              lectus mattis. Nunc etiam turpis scelerisque purus ac.
+              Pelayanan di Toko Ilham berfokus pada kepuasan pelanggan dengan
+              mengutamakan kecepatan, ketepatan, dan keramahan dalam setiap
+              transaksi. Staf toko siap membantu pelanggan dalam memilih produk
+              yang sesuai dengan kebutuhan, memberikan informasi terkait
+              spesifikasi barang, serta memastikan proses pembelian berlangsung
+              mudah dan nyaman. Selain melayani pembelian langsung di toko, Toko
+              Ilham juga menyediakan layanan pemesanan dan konsultasi produk
+              untuk pelanggan yang memerlukan jumlah besar atau barang khusus.
+              Dengan pelayanan yang responsif dan profesional, Toko Ilham
+              berkomitmen untuk memberikan pengalaman berbelanja yang efisien
+              dan memuaskan bagi seluruh pelanggan.
             </p>
           </div>
         </div>

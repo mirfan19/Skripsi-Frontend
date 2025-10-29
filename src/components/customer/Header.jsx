@@ -51,11 +51,7 @@ export default function Header({ onSearch }) {
     <header className="bg-blue-600 text-white py-4 px-8 flex justify-between items-center">
       {/* Logo */}
       <div className="flex items-center">
-        <img
-          src="/logo.png" // Replace with the actual path to your logo image
-          alt="Toko Ilham Logo"
-          className="h-10 w-10 mr-2"
-        />
+        <img src="/Toko Ilham.jpg" alt="Toko Ilham" className="h-10 w-auto" />
         <Link to="/home" className="hover:text-gray-200">
           <h1 className="text-2xl font-bold">TOKO ILHAM</h1>
         </Link>

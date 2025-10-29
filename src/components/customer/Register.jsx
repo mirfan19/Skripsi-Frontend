@@ -74,7 +74,7 @@ export default function Register() {
           animate={{ x: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <img src="/bike.png" alt="Bike" className="w-3/4" />
+          <img src="/Toko Ilham Logo.png" alt="logo" className="w-3/4" />
         </motion.div>
 
         {/* Right - Form */}
