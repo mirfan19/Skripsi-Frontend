@@ -115,7 +115,9 @@ export default function ManajemenProduk() {
                           src={
                             product.ImageURL.startsWith("http")
                               ? product.ImageURL
-                              : `http://localhost:3000${product.ImageURL}`
+                              : `${import.meta.env.VITE_API_URL}${
+                                  product.ImageURL
+                                }`
                           }
                           alt={product.ProductName}
                           className="h-16 w-16 object-cover rounded shadow"

@@ -37,7 +37,9 @@ export default function EditProduct() {
           Image: null,
         });
         setCurrentImage(
-          product.ImageURL ? `http://localhost:3000${product.ImageURL}` : ""
+          product.ImageURL
+            ? `${import.meta.env.VITE_API_URL}${product.ImageURL}`
+            : ""
         );
         setSuppliers(supplierResponse.data);
         setLoading(false);
@@ -254,7 +256,7 @@ export default function EditProduct() {
                         currentImage
                           ? currentImage.startsWith("http")
                             ? currentImage
-                            : `http://localhost:3000${currentImage}`
+                            : `${import.meta.env.VITE_API_URL}${currentImage}`
                           : ""
                       }
                       alt="Current product"

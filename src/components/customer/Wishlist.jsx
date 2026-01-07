@@ -146,7 +146,9 @@ export default function Wishlist() {
                   item.Product.ImageURL
                     ? item.Product.ImageURL.startsWith("http")
                       ? item.Product.ImageURL
-                      : `http://localhost:3000${item.Product.ImageURL}`
+                      : `${import.meta.env.VITE_API_URL}${
+                          item.Product.ImageURL
+                        }`
                     : "/product-placeholder.png"
                 }
                 alt={item.Product.ProductName}
