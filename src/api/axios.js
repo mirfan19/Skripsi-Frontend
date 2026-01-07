@@ -3,12 +3,11 @@
 console.log("VITE_API_URL:", import.meta.env.VITE_API_URL);
 import axios from "axios";
 
-const baseURL = (import.meta.env.VITE_API_URL || "http://localhost:3000") + "/api/v1";
-console.log("AXIOS BASEURL:", baseURL);
-const api = axios.create({
-  baseURL,
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+export const api = axios.create({
+  baseURL: API_BASE_URL,
   timeout: 15000,
-  withCredentials: true, // important if backend uses cookies/sessions
+  withCredentials: true,
   headers: {
     "Content-Type": "application/json",
   },
@@ -60,4 +59,4 @@ function cryptoRandomId() {
   }
 }
 
-export default api;
+// ...existing code...
