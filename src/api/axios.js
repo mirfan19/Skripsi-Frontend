@@ -60,3 +60,5 @@ function cryptoRandomId() {
 }
 
 // ...existing code...
+
+export default api;

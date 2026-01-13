@@ -26,9 +26,15 @@ export default function AdminSidebar() {
         </Link>
         <Link
           to="/admin/products"
-          className="block py-2.5 px-4 rounded bg-blue-700"
+          className="block py-2.5 px-4 rounded hover:bg-blue-700"
         >
           Manajemen Produk
+        </Link>
+        <Link
+          to="/admin/suppliers"
+          className="block py-2.5 px-4 rounded hover:bg-blue-700"
+        >
+          Manajemen Supplier
         </Link>
         <Link
           to="/admin/orders"

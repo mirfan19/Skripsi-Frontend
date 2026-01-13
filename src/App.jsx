@@ -30,6 +30,7 @@ import AddProduct from "./components/admin/AddProduct";
 import EditProduct from "./components/admin/EditProduct";
 import ManajemenPesanan from "./components/admin/ManajemenPesanan";
 import ManajemenReport from "./components/admin/ManajemenReport";
+import AdminSupplier from "./components/admin/AdminSupplier";
 
 function AnimatedRoutes() {
   const location = useLocation();
@@ -79,6 +80,7 @@ function AnimatedRoutes() {
                 <Route path="/products/edit/:id" element={<EditProduct />} />
                 <Route path="/orders" element={<ManajemenPesanan />} />
                 <Route path="/orders/:orderId" element={<PesananDetail />} />
+                <Route path="/suppliers" element={<AdminSupplier />} />
                 <Route path="/reports" element={<ManajemenReport />} />
               </Routes>
             </ProtectedRoute>
