@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import api from "../../api/axios";
 import MonthlyIncomeChart from "./MonthlyIncomeChart";
+import AdminSidebar from "./AdminSidebar";
 
 export default function AdminDashboard() {
   const navigate = useNavigate();
@@ -154,50 +155,12 @@ export default function AdminDashboard() {
     navigate("/login/admin");
   };
 
-  // Render UI Components
-  const renderSidebar = () => (
-    <aside className="fixed left-0 top-0 h-screen w-64 bg-blue-600 text-white p-4">
-      <h1 className="text-2xl font-bold mb-8">TOKO ILHAM</h1>
-      <nav className="space-y-2">
-        <Link to="/admin" className="block py-2.5 px-4 rounded bg-blue-700">
-          Dashboard
-        </Link>
-        <Link
-          to="/admin/products"
-          className="block py-2.5 px-4 rounded hover:bg-blue-500"
-        >
-          Manajemen Produk
-        </Link>
-        <Link
-          to="/admin/orders"
-          className="block py-2.5 px-4 rounded hover:bg-blue-500"
-        >
-          Manajemen Pesanan
-        </Link>
-        <Link
-          to="/admin/reports"
-          className="block py-2.5 px-4 rounded hover:bg-blue-500"
-        >
-          Laporan Keuangan
-        </Link>
-      </nav>
-      <button
-        onClick={handleLogout}
-        className="absolute bottom-4 left-4 right-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
-      >
-        Log out
-      </button>
-    </aside>
-  );
-
   return (
-    <div className="min-h-screen bg-gray-100">
-      {renderSidebar()}
-
-      <main className="ml-64 p-8">
-        <h1 className="text-3xl font-bold mb-8">Dashboard</h1>
-
-        <div className="grid grid-cols-3 gap-6 mb-8">
+    <div className="flex min-h-screen bg-gray-100">
+      <AdminSidebar />
+      <main className="flex-1 p-8 ml-64">
+        <h1 className="text-3xl font-bold mb-6">Dashboard Admin</h1>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <div className="bg-white p-6 rounded-lg shadow">
             <h3 className="text-lg font-semibold mb-2">Total Penjualan</h3>
             <p className="text-2xl">

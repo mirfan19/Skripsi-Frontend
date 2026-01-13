@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import api from "../../api/axios";
+import AdminSidebar from "./AdminSidebar";
 
 export default function ManajemenPesanan() {
   const [orders, setOrders] = useState([]);
@@ -25,7 +26,6 @@ export default function ManajemenPesanan() {
       setLoading(false);
     }
   }, [searchQuery]);
-
   useEffect(() => {
     fetchOrders();
   }, [fetchOrders]);
@@ -77,6 +77,12 @@ export default function ManajemenPesanan() {
               className="block py-2.5 px-4 rounded text-white hover:bg-blue-700"
             >
               Manajemen Produk
+            </Link>
+            <Link
+              to="/admin/suppliers"
+              className="block py-2.5 px-4 rounded text-white hover:bg-blue-700"
+            >
+              Manajemen Supplier
             </Link>
             <Link
               to="/admin/orders"
