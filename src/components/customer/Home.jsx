@@ -24,7 +24,7 @@ export default function Home() {
       const response = await api.get("/products", {
         params: { search: query },
       });
-      setProducts(response.data.data || []);
+      setProducts((response.data.data || []).slice(0, 4));
     } catch (error) {
       console.error("Error fetching products:", error);
       setError("Failed to load products");

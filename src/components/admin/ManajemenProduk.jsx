@@ -83,9 +83,6 @@ export default function ManajemenProduk() {
               <thead className="bg-gray-50">
                 <tr>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    ID
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Nama Produk
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -105,9 +102,6 @@ export default function ManajemenProduk() {
               <tbody className="bg-white divide-y divide-gray-200">
                 {products.map((product) => (
                   <tr key={product.ProductID}>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      {product.ProductID}
-                    </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       {product.ProductName}
                     </td>
