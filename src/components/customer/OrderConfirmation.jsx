@@ -1,13 +1,70 @@
-import { useLocation, Navigate } from "react-router-dom";
+import { useLocation, Navigate, useNavigate, useSearchParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import api from "../../api/axios";
 import Header from "./Header";
 
 export default function OrderConfirmation() {
   const location = useLocation();
-  const { orderDetails, paymentResult } = location.state || {};
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const [orderDetails, setOrderDetails] = useState(location.state?.orderDetails || null);
+  const [paymentResult, setPaymentResult] = useState(location.state?.paymentResult || null);
+  const [loading, setLoading] = useState(!orderDetails);
 
-  // Redirect if there's no order details
+  useEffect(() => {
+    const fetchOrderFromParams = async () => {
+      const midtransOrderId = searchParams.get("order_id");
+      const statusCode = searchParams.get("status_code");
+      const transactionStatus = searchParams.get("transaction_status");
+
+      if (midtransOrderId && !orderDetails) {
+        try {
+          // Extract internal OrderID from Midtrans OrderID (ORDER-ID-TIMESTAMP)
+          const parts = midtransOrderId.split("-");
+          const internalOrderId = parts[1];
+
+          const response = await api.get(`/orders/${internalOrderId}`);
+          if (response.data.success) {
+            const order = response.data.data;
+            setOrderDetails({
+              orderId: order.OrderID,
+              totalAmount: order.TotalAmount,
+              status: transactionStatus === "settlement" || transactionStatus === "capture" ? "success" : "pending",
+              paymentMethod: "Midtrans Online",
+            });
+            setPaymentResult({
+              transaction_id: midtransOrderId,
+              status_code: statusCode,
+              transaction_status: transactionStatus,
+            });
+          }
+        } catch (error) {
+          console.error("Error fetching order details:", error);
+        } finally {
+          setLoading(false);
+        }
+      } else if (orderDetails) {
+        setLoading(false);
+      }
+    };
+
+    fetchOrderFromParams();
+  }, [searchParams, orderDetails]);
+
+  // Redirect only if not loading and no details found
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-100">
+        <Header />
+        <div className="flex justify-center items-center h-[calc(100vh-64px)]">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+        </div>
+      </div>
+    );
+  }
+
   if (!orderDetails) {
-    return <Navigate to="/" replace />;
+    return <Navigate to="/home" replace />;
   }
 
   const getStatusColor = (status) => {
@@ -148,14 +205,14 @@ export default function OrderConfirmation() {
           {/* Navigation Buttons */}
           <div className="mt-8 space-y-4">
             <button
-              onClick={() => (window.location.href = "/")}
+              onClick={() => navigate("/home")}
               className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition-colors"
             >
               Lanjutkan Belanja
             </button>
             {orderDetails.status === "pending" && (
               <button
-                onClick={() => (window.location.href = "/payment")}
+                onClick={() => navigate("/payment", { state: { orderDetails } })}
                 className="w-full bg-yellow-500 text-white py-2 rounded hover:bg-yellow-600 transition-colors"
               >
                 Selesaikan Pembayaran
