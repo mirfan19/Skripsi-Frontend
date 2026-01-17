@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import api from "../../api/axios";
+import api, { STATIC_BASE_URL } from "../../api/axios";
 import AdminSidebar from "./AdminSidebar";
 
 export default function EditProduct() {
@@ -45,7 +45,7 @@ export default function EditProduct() {
             product.ImageURL
               ? product.ImageURL.startsWith("http")
                 ? product.ImageURL
-                : `${import.meta.env.VITE_API_URL?.replace(/\/$/, "") || 'http://localhost:3000'}${
+                : `${STATIC_BASE_URL}${
                     product.ImageURL
                   }`
               : ""

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaHeart } from "react-icons/fa";
-import api from "../../api/axios";
+import api, { STATIC_BASE_URL } from "../../api/axios";
 import Header from "./Header";
 
 export default function ProductList() {
@@ -81,7 +81,7 @@ export default function ProductList() {
                   product.ImageURL
                     ? product.ImageURL.startsWith("http")
                       ? product.ImageURL
-                      : `${import.meta.env.VITE_API_URL || 'http://localhost:3000'}${product.ImageURL}`
+                      : `${STATIC_BASE_URL}${product.ImageURL}`
                     : "/product-placeholder.png"
                 }
                 alt={product.ProductName}

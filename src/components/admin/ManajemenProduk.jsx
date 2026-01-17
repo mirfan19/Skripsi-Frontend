@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import api from "../../api/axios";
+import api, { STATIC_BASE_URL } from "../../api/axios";
 import AdminSidebar from "./AdminSidebar";
 
 export default function ManajemenProduk() {
@@ -117,7 +117,7 @@ export default function ManajemenProduk() {
                           src={
                             product.ImageURL.startsWith("http")
                               ? product.ImageURL
-                              : `${import.meta.env.VITE_API_URL || 'http://localhost:3000'}${
+                              : `${STATIC_BASE_URL}${
                                   product.ImageURL
                                 }`
                           }

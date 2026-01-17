@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { FaHeart } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion"; // Tambahkan ini
-import api from "../../api/axios";
+import api, { STATIC_BASE_URL } from "../../api/axios";
 import Header from "./Header";
 
 export default function Home() {
@@ -164,7 +164,7 @@ export default function Home() {
                       product.ImageURL
                         ? product.ImageURL.startsWith("http")
                           ? product.ImageURL
-                          : `${import.meta.env.VITE_API_URL || 'http://localhost:3000'}${product.ImageURL}`
+                          : `${STATIC_BASE_URL}${product.ImageURL}`
                         : "/product-placeholder.png"
                     }
                     alt={product.ProductName}

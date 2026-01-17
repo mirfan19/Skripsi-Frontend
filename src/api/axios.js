@@ -6,7 +6,12 @@ import axios from "axios";
 // Use environment variable or fallback to localhost
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api/v1';
 
+// Derive static base URL (strip /api/v1 or /api)
+// This ensures that images can be fetched from the root of the backend
+export const STATIC_BASE_URL = import.meta.env.VITE_API_URL || API_BASE_URL.replace(/\/api\/v1\/?$/, '').replace(/\/api\/?$/, '');
+
 console.log("Using API_BASE_URL:", API_BASE_URL);
+console.log("Using STATIC_BASE_URL for images:", STATIC_BASE_URL);
 
 export const api = axios.create({
   baseURL: API_BASE_URL,

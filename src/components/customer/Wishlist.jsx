@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaTrash } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
-import api from "../../api/axios";
+import api, { STATIC_BASE_URL } from "../../api/axios";
 import Header from "./Header";
 
 export default function Wishlist() {
@@ -146,7 +146,7 @@ export default function Wishlist() {
                   item.Product.ImageURL
                     ? item.Product.ImageURL.startsWith("http")
                       ? item.Product.ImageURL
-                      : `${import.meta.env.VITE_API_URL || 'http://localhost:3000'}${item.Product.ImageURL}`
+                      : `${STATIC_BASE_URL}${item.Product.ImageURL}`
                     : "/product-placeholder.png"
                 }
                 alt={item.Product.ProductName}
