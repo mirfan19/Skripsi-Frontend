@@ -98,9 +98,6 @@ export default function ProductList() {
               <p className="text-lg font-bold text-blue-600">
                 Rp {product.Price.toLocaleString("id-ID")}
               </p>
-              <p className="text-sm text-gray-500">
-                Stock: {product.StockQuantity}
-              </p>
               <button
                 className="absolute top-2 right-2 text-red-500 hover:text-red-700"
                 onClick={() => addToWishlist(product.ProductID)}
