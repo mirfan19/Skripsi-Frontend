@@ -12,7 +12,7 @@ export default function AddProduct() {
     StockQuantity: "",
     Category: "",
     SupplierID: "", // Add this
-    Image: null,
+    image: null,
   });
   const [suppliers, setSuppliers] = useState([]); // Add this
   const [loading, setLoading] = useState(false);
@@ -35,10 +35,10 @@ export default function AddProduct() {
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
-    if (name === "Image") {
+    if (name === "image") {
       setFormData((prev) => ({
         ...prev,
-        Image: files[0],
+        image: files[0],
       }));
     } else {
       setFormData((prev) => ({
@@ -58,8 +58,8 @@ export default function AddProduct() {
 
       const formDataToSend = new FormData();
       Object.keys(formData).forEach((key) => {
-        if (key === "Image" && formData[key]) {
-          formDataToSend.append("Image", formData[key]);
+        if (key === "image" && formData[key]) {
+          formDataToSend.append("image", formData[key]);
         } else {
           formDataToSend.append(key, formData[key]);
         }
@@ -213,7 +213,7 @@ export default function AddProduct() {
                 </label>
                 <input
                   type="file"
-                  name="Image"
+                  name="image"
                   onChange={handleChange}
                   className="w-full p-2 border rounded"
                   accept="image/*"

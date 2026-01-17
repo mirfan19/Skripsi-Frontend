@@ -3,7 +3,11 @@
 console.log("VITE_API_URL:", import.meta.env.VITE_API_URL);
 import axios from "axios";
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+// Use environment variable or fallback to localhost
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api/v1';
+
+console.log("Using API_BASE_URL:", API_BASE_URL);
+
 export const api = axios.create({
   baseURL: API_BASE_URL,
   timeout: 15000,

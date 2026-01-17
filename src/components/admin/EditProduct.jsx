@@ -12,6 +12,7 @@ export default function EditProduct() {
     Price: "",
     StockQuantity: "",
     SupplierID: "",
+    Category: "Lainnya",
     Image: null,
   });
   const [suppliers, setSuppliers] = useState([]);
@@ -22,30 +23,67 @@ export default function EditProduct() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [productResponse, supplierResponse] = await Promise.all([
-          api.get(`/admin/products/${id}`),
-          api.get("/admin/suppliers"),
-        ]);
+        // Fetch product data
+        try {
+          console.log('Fetching product with ID:', id);
+          const productResponse = await api.get(`/admin/products/${id}`);
+          console.log('Product response:', productResponse.data);
 
-        const product = productResponse.data;
-        setFormData({
-          ProductName: product.ProductName,
-          Description: product.Description,
-          Price: product.Price.toString(),
-          StockQuantity: product.StockQuantity.toString(),
-          SupplierID: product.SupplierID?.toString() || "",
-          Image: null,
-        });
-        setCurrentImage(
-          product.ImageURL
-            ? `${import.meta.env.VITE_API_URL}${product.ImageURL}`
-            : ""
-        );
-        setSuppliers(supplierResponse.data);
+          const product = productResponse.data?.data;
+          if (!product) throw new Error("Product not found");
+
+          setFormData({
+            ProductName: product.ProductName,
+            Description: product.Description,
+            Price: product.Price.toString(),
+            StockQuantity: product.StockQuantity.toString(),
+            SupplierID: product.SupplierID?.toString() || "",
+            Category: product.Category || "Lainnya",
+            Image: null,
+          });
+          setCurrentImage(
+            product.ImageURL
+              ? product.ImageURL.startsWith("http")
+                ? product.ImageURL
+                : `${import.meta.env.VITE_API_URL?.replace(/\/$/, "") || 'http://localhost:3000'}${
+                    product.ImageURL
+                  }`
+              : ""
+          );
+        } catch (productError) {
+          console.error("Failed to fetch product:", productError);
+          throw productError; // Re-throw to trigger outer catch
+        }
+
+        // Fetch supplier data
+        try {
+          console.log('Fetching suppliers...');
+          const supplierResponse = await api.get("/admin/suppliers");
+          console.log('Suppliers response:', supplierResponse.data);
+          setSuppliers(supplierResponse.data);
+        } catch (supplierError) {
+          console.error("Failed to fetch suppliers:", supplierError);
+          // Don't throw - allow page to load even if suppliers fail
+          setSuppliers([]);
+        }
+
         setLoading(false);
       } catch (error) {
         console.error("Error fetching data:", error);
-        setError("Failed to fetch product details");
+        console.error("Error response:", error.response);
+        console.error("Error status:", error.response?.status);
+        console.error("Error data:", error.response?.data);
+        
+        let errorMessage = "Failed to fetch product details";
+        if (error.response?.data?.message) {
+          errorMessage = error.response.data.message;
+        } else if (error.response?.data?.error) {
+          errorMessage = error.response.data.error;
+        } else if (error.message) {
+          errorMessage = error.message;
+        }
+        
+        setError(errorMessage);
         setLoading(false);
       }
     };
@@ -92,6 +130,7 @@ export default function EditProduct() {
         Price: sanitizedPrice,
         StockQuantity: formData.StockQuantity,
         SupplierID: formData.SupplierID,
+        Category: formData.Category || "Lainnya",
       };
 
       Object.entries(fieldsToSend).forEach(([key, value]) => {
@@ -121,14 +160,17 @@ export default function EditProduct() {
     } catch (error) {
       console.error("Error updating product:", error);
       let errorMessage = "Failed to update product. Please try again.";
-      if (typeof error === "string") {
-        errorMessage = error;
-      } else if (error instanceof Error) {
-        errorMessage = error.message;
-      } else if (error.response?.data?.message) {
+      
+      console.error("Full error object:", error);
+
+      if (error.response?.data?.message) {
         errorMessage = error.response.data.message;
       } else if (error.response?.data?.error) {
         errorMessage = error.response.data.error;
+      } else if (typeof error === "string") {
+        errorMessage = error;
+      } else if (error instanceof Error) {
+        errorMessage = error.message;
       }
       setError(String(errorMessage));
     } finally {
@@ -244,6 +286,24 @@ export default function EditProduct() {
                     </option>
                   ))}
                 </select>
+                {suppliers.length === 0 && (
+                  <p className="text-sm text-amber-600 mt-1">
+                    ⚠️ Could not load suppliers. Please refresh the page.
+                  </p>
+                )}
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">
+                  Kategori
+                </label>
+                <input
+                  type="text"
+                  name="Category"
+                  value={formData.Category}
+                  onChange={handleChange}
+                  className="w-full p-2 border rounded"
+                  required
+                />
               </div>
               <div>
                 <label className="block text-sm font-medium mb-1">
@@ -252,13 +312,7 @@ export default function EditProduct() {
                 {currentImage && (
                   <div className="mb-2">
                     <img
-                      src={
-                        currentImage
-                          ? currentImage.startsWith("http")
-                            ? currentImage
-                            : `${import.meta.env.VITE_API_URL}${currentImage}`
-                          : ""
-                      }
+                      src={currentImage}
                       alt="Current product"
                       className="w-32 h-32 object-cover rounded"
                       onError={(e) => {

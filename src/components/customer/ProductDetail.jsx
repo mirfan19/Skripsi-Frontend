@@ -16,7 +16,7 @@ export default function ProductDetail() {
     try {
       setLoading(true);
       const response = await api.get(`/products/${id}`);
-      setProduct(response.data);
+      setProduct(response.data.data);
     } catch (error) {
       setError("Failed to load product details");
       console.error("Error:", error);
@@ -119,7 +119,7 @@ export default function ProductDetail() {
                   product.ImageURL
                     ? product.ImageURL.startsWith("http")
                       ? product.ImageURL
-                      : `${import.meta.env.VITE_API_URL}${product.ImageURL}`
+                      : `${import.meta.env.VITE_API_URL || 'http://localhost:3000'}${product.ImageURL}`
                     : "/product-placeholder.png"
                 }
                 alt={product.ProductName}
@@ -146,7 +146,7 @@ export default function ProductDetail() {
               </div>
 
               <p className="text-2xl font-bold text-blue-600 mt-4">
-                Rp {product.Price.toLocaleString("id-ID")}
+                Rp {product.Price ? product.Price.toLocaleString("id-ID") : '0'}
               </p>
 
               <div className="mt-6">

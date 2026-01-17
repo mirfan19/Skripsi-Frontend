@@ -81,7 +81,7 @@ export default function ProductList() {
                   product.ImageURL
                     ? product.ImageURL.startsWith("http")
                       ? product.ImageURL
-                      : `${import.meta.env.VITE_API_URL}${product.ImageURL}`
+                      : `${import.meta.env.VITE_API_URL || 'http://localhost:3000'}${product.ImageURL}`
                     : "/product-placeholder.png"
                 }
                 alt={product.ProductName}

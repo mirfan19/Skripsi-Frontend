@@ -69,12 +69,14 @@ export default function ManajemenProduk() {
           </button>
         </div>
 
+        {error && (
+          <div className="bg-red-100 text-red-600 p-4 rounded mb-4">{error}</div>
+        )}
+
         {loading ? (
           <div className="flex justify-center items-center h-64">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
           </div>
-        ) : error ? (
-          <div className="bg-red-100 text-red-600 p-4 rounded">{error}</div>
         ) : (
           <div className="bg-white rounded-lg shadow overflow-hidden">
             <table className="min-w-full divide-y divide-gray-200">
@@ -115,7 +117,7 @@ export default function ManajemenProduk() {
                           src={
                             product.ImageURL.startsWith("http")
                               ? product.ImageURL
-                              : `${import.meta.env.VITE_API_URL}${
+                              : `${import.meta.env.VITE_API_URL || 'http://localhost:3000'}${
                                   product.ImageURL
                                 }`
                           }
