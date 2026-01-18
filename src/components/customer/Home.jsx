@@ -106,18 +106,20 @@ export default function Home() {
 
       {/* Hero Section */}
       <div
-        className="w-full rounded-xl overflow-hidden mb-8 relative"
-        style={{ maxHeight: 500, marginTop: 30 }}
+        className="w-full rounded-xl overflow-hidden mb-6 relative px-4"
+        style={{ marginTop: 20 }}
       >
-        <img
-          src={"/assets/lasse-jensen-84mFDd6bZG4-unsplash.jpg"}
-          alt="Hero Banner"
-          className="w-full object-cover h-80"
-        />
-        <div className="absolute inset-0 flex items-center justify-center">
-          <span className="bg-cyan-600 bg-opacity-80 text-white text-2xl md:text-3xl font-bold px-8 py-4 rounded">
-            SEMUA KEBUTUHAN KANTOR ADA DISINI
-          </span>
+        <div className="relative h-48 md:h-80 w-full rounded-xl overflow-hidden shadow-lg">
+          <img
+            src={"/assets/lasse-jensen-84mFDd6bZG4-unsplash.jpg"}
+            alt="Hero Banner"
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center p-4">
+            <span className="bg-cyan-600 bg-opacity-90 text-white text-lg md:text-3xl font-bold px-4 md:px-8 py-2 md:py-4 rounded shadow-lg text-center leading-tight">
+              SEMUA KEBUTUHAN KANTOR ADA DISINI
+            </span>
+          </div>
         </div>
       </div>
 
@@ -216,10 +218,10 @@ export default function Home() {
         </section>
 
         {/* Section 1: TOKO ILHAM */}
-        <div className="flex flex-col md:flex-row items-center justify-between mb-12 gap-8">
-          <div className="md:w-1/2">
-            <h1 className="text-2xl font-bold mb-2">TOKO ILHAM</h1>
-            <p className="text-base font-normal">
+        <div className="flex flex-col md:flex-row items-center justify-between mb-16 gap-8 px-8">
+          <div className="md:w-1/2 order-2 md:order-1">
+            <h1 className="text-2xl md:text-3xl font-bold mb-4 text-blue-600">TOKO ILHAM</h1>
+            <p className="text-base text-gray-700 leading-relaxed text-justify">
               Toko Ilham merupakan sebuah toko alat tulis dan kantor (ATK) yang
               menyediakan berbagai kebutuhan perlengkapan kerja, baik untuk
               individu maupun perusahaan. Toko ini menjual beragam produk
@@ -234,26 +236,27 @@ export default function Home() {
               kantor.
             </p>
           </div>
-          <div className="md:w-1/2 flex justify-center">
+          <div className="md:w-1/2 flex justify-center order-1 md:order-2">
             <img
               src="https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?auto=format&fit=crop&w=400&q=80"
               alt="Toko Ilham"
-              className="rounded-lg object-cover w-full max-w-md h-64 shadow"
+              className="rounded-lg object-cover w-full max-w-sm md:max-w-md h-64 shadow-xl"
             />
           </div>
         </div>
+
         {/* Section 2: Pelayan */}
-        <div className="flex flex-col md:flex-row items-center justify-between gap-8 mb-12">
-          <div className="md:w-1/2 flex justify-center order-2 md:order-1">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-8 mb-16 px-8">
+          <div className="md:w-1/2 flex justify-center order-1">
             <img
               src="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=400&q=80"
               alt="Pelayanan"
-              className="rounded-lg object-cover w-full max-w-md h-64 shadow"
+              className="rounded-lg object-cover w-full max-w-sm md:max-w-md h-64 shadow-xl"
             />
           </div>
-          <div className="md:w-1/2 order-1 md:order-2">
-            <h2 className="text-xl font-bold mb-2 text-right">Pelayan</h2>
-            <p className="text-base font-normal text-right">
+          <div className="md:w-1/2 order-2">
+            <h2 className="text-2xl md:text-3xl font-bold mb-4 text-blue-600 md:text-right">PELAYANAN</h2>
+            <p className="text-base text-gray-700 leading-relaxed md:text-right text-justify">
               Pelayanan di Toko Ilham berfokus pada kepuasan pelanggan dengan
               mengutamakan kecepatan, ketepatan, dan keramahan dalam setiap
               transaksi. Staf toko siap membantu pelanggan dalam memilih produk
