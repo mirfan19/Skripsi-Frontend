@@ -123,7 +123,7 @@ export default function Home() {
         </div>
       </div>
 
-      <div className="p-">
+      <div className="p-4 md:p-0">
         {/* Products Section */}
         <section className="py-12 px-8">
           <div className="flex items-center justify-between mb-6">
@@ -183,7 +183,7 @@ export default function Home() {
                     {product.Description}
                   </p>
                   <p className="text-lg font-bold text-blue-600">
-                    Rp {product.Price.toLocaleString("id-ID")}
+                    Rp {product.Price ? Number(product.Price).toLocaleString("id-ID") : "0"}
                   </p>
 
                   {isLoggedIn ? (

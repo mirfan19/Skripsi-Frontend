@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { FaUser, FaHeart, FaShoppingCart, FaBars, FaTimes } from "react-icons/fa";
 
 export default function Header({ onSearch }) {
@@ -49,95 +50,102 @@ export default function Header({ onSearch }) {
 
   return (
     <header className="bg-blue-600 text-white shadow-md sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16 md:h-20 py-2">
-          {/* Logo */}
-          <div className="flex items-center shrink-0">
-            <img src="/Toko Ilham.jpg" alt="Toko Ilham" className="h-8 md:h-10 w-auto rounded" />
-            <Link to="/home" className="ml-2 hover:text-gray-200">
-              <h1 className="text-xl md:text-2xl font-bold tracking-tight">TOKO ILHAM</h1>
-            </Link>
+      <div className="w-full px-4 md:px-6">
+        <div className="grid grid-cols-2 md:grid-cols-3 items-center h-16 md:h-20 py-2">
+          {/* Left: Logo */}
+          <div className="flex justify-start items-center">
+            <div className="flex items-center shrink-0">
+              <img src="/Toko Ilham.jpg" alt="Toko Ilham" className="h-8 md:h-10 w-auto rounded" />
+              <Link to="/home" className="ml-2 hover:text-gray-200">
+                <h1 className="text-xl md:text-2xl font-bold tracking-tight whitespace-nowrap">TOKO ILHAM</h1>
+              </Link>
+            </div>
           </div>
 
-          {/* Search Bar - Hidden on Mobile, shown in mobile menu or as separate block */}
-          <div className="hidden md:flex flex-1 max-w-md mx-8">
-            <form onSubmit={handleSearch} className="w-full flex">
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Cari di Toko Ilham"
-                className="w-full px-4 py-2 rounded-l-md bg-white text-black text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-              <button
-                type="submit"
-                className="bg-blue-800 text-white px-4 py-2 rounded-r-md hover:bg-blue-900 transition flex items-center"
-              >
-                Cari
-              </button>
-            </form>
+          {/* Center: Search Bar (Desktop only) */}
+          <div className="hidden md:flex justify-center items-center w-full">
+            <div className="w-full max-w-lg">
+              <form onSubmit={handleSearch} className="w-full flex">
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Cari di Toko Ilham"
+                  className="w-full px-4 py-2 rounded-l-md bg-white text-black text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+                <button
+                  type="submit"
+                  className="bg-blue-800 text-white px-4 py-2 rounded-r-md hover:bg-blue-900 transition flex items-center whitespace-nowrap"
+                >
+                  Cari
+                </button>
+              </form>
+            </div>
           </div>
 
-          {/* Desktop Right Icons */}
-          <div className="hidden md:flex items-center space-x-6">
-            {isLoggedIn ? (
-              <>
-                <Link to="/wishlist" className="hover:text-gray-200 transition-colors">
-                  <FaHeart className="text-xl" />
-                </Link>
-                <Link to="/cart" className="hover:text-gray-200 transition-colors">
+          {/* Right: Icons & Mobile Button */}
+          <div className="flex justify-end items-center space-x-4 md:space-x-6">
+            {/* Desktop Right Icons */}
+            <div className="hidden md:flex items-center space-x-6">
+              {isLoggedIn ? (
+                <>
+                  <Link to="/wishlist" className="hover:text-gray-200 transition-colors">
+                    <FaHeart className="text-xl" />
+                  </Link>
+                  <Link to="/cart" className="hover:text-gray-200 transition-colors">
+                    <FaShoppingCart className="text-xl" />
+                  </Link>
+                  <div className="relative user-menu">
+                    <button
+                      onClick={toggleDropdown}
+                      className="hover:text-gray-200 flex items-center transition-colors px-1"
+                    >
+                      <FaUser className="text-xl" />
+                    </button>
+                    {isDropdownOpen && (
+                      <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 ring-1 ring-black ring-opacity-5">
+                        <Link
+                          to="/profile"
+                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                          onClick={() => setIsDropdownOpen(false)}
+                        >
+                          Profile
+                        </Link>
+                        <button
+                          onClick={() => {
+                            handleLogout();
+                            setIsDropdownOpen(false);
+                          }}
+                          className="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 text-left"
+                        >
+                          Logout
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                </>
+              ) : (
+                <div className="flex space-x-4 items-center">
+                  <Link to="/login" className="hover:text-gray-200 text-sm font-medium">Login</Link>
+                  <Link to="/register" className="bg-white text-blue-600 px-4 py-1.5 rounded-md hover:bg-gray-100 text-sm font-bold transition">Register</Link>
+                </div>
+              )}
+            </div>
+
+            {/* Mobile Menu Buttons */}
+            <div className="md:hidden flex items-center space-x-4">
+              {isLoggedIn && (
+                <Link to="/cart" className="hover:text-gray-200 relative">
                   <FaShoppingCart className="text-xl" />
                 </Link>
-                <div className="relative user-menu">
-                  <button
-                    onClick={toggleDropdown}
-                    className="hover:text-gray-200 flex items-center transition-colors px-1"
-                  >
-                    <FaUser className="text-xl" />
-                  </button>
-                  {isDropdownOpen && (
-                    <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 ring-1 ring-black ring-opacity-5">
-                      <Link
-                        to="/profile"
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                        onClick={() => setIsDropdownOpen(false)}
-                      >
-                        Profile
-                      </Link>
-                      <button
-                        onClick={() => {
-                          handleLogout();
-                          setIsDropdownOpen(false);
-                        }}
-                        className="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 text-left"
-                      >
-                        Logout
-                      </button>
-                    </div>
-                  )}
-                </div>
-              </>
-            ) : (
-              <div className="flex space-x-4 items-center">
-                <Link to="/login" className="hover:text-gray-200 text-sm font-medium">Login</Link>
-                <Link to="/register" className="bg-white text-blue-600 px-4 py-1.5 rounded-md hover:bg-gray-100 text-sm font-bold transition">Register</Link>
-              </div>
-            )}
-          </div>
-
-          {/* Mobile Menu Button */}
-          <div className="md:hidden flex items-center space-x-4">
-            {isLoggedIn && (
-              <Link to="/cart" className="hover:text-gray-200 relative">
-                <FaShoppingCart className="text-xl" />
-              </Link>
-            )}
-            <button
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="text-white hover:text-gray-200 focus:outline-none"
-            >
-              {isMenuOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
-            </button>
+              )}
+              <button
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+                className="text-white hover:text-gray-200 focus:outline-none"
+              >
+                {isMenuOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
+              </button>
+            </div>
           </div>
         </div>
 

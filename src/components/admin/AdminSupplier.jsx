@@ -66,7 +66,7 @@ const AdminSupplier = () => {
   return (
     <div className="flex min-h-screen bg-gray-100">
       <AdminSidebar />
-      <div className="flex-1 p-8 ml-64">
+      <div className="flex-1 p-4 md:p-8 md:ml-64 mt-14 md:mt-0">
         <h2 className="text-xl font-bold mb-4">Manajemen Supplier</h2>
         <form
           onSubmit={handleAddSupplier}

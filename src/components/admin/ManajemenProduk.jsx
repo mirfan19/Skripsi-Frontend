@@ -58,7 +58,7 @@ export default function ManajemenProduk() {
     <div className="min-h-screen bg-gray-100 flex">
       <AdminSidebar />
 
-      <main className="flex-1 ml-64 p-8">
+      <main className="flex-1 md:ml-64 p-4 md:p-8 mt-14 md:mt-0">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-bold">Manajemen Produk</h1>
           <button

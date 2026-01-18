@@ -93,7 +93,7 @@ export default function ManajemenReport() {
   return (
     <div className="flex min-h-screen bg-gray-100">
       <AdminSidebar />
-      <div className="flex-1 p-8 ml-64">
+      <div className="flex-1 p-4 md:p-8 md:ml-64 mt-14 md:mt-0">
         <div className="bg-white rounded-lg shadow-lg p-6">
           <h1 className="text-2xl font-bold mb-6 flex items-center justify-between">
             Laporan Keuangan

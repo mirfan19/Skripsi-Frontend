@@ -158,13 +158,13 @@ export default function AdminDashboard() {
   return (
     <div className="flex min-h-screen bg-gray-100">
       <AdminSidebar />
-      <main className="flex-1 p-8 ml-64">
+      <main className="flex-1 p-4 md:p-8 md:ml-64 mt-12 md:mt-0">
         <h1 className="text-3xl font-bold mb-6">Dashboard Admin</h1>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <div className="bg-white p-6 rounded-lg shadow">
             <h3 className="text-lg font-semibold mb-2">Total Penjualan</h3>
             <p className="text-2xl">
-              Rp. {stats.totalPenjualan.toLocaleString("id-ID")}
+              Rp. {Number(stats.totalPenjualan).toLocaleString("id-ID")}
             </p>
           </div>
           <div className="bg-white p-6 rounded-lg shadow">

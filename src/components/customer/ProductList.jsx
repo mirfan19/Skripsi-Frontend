@@ -96,7 +96,7 @@ export default function ProductList() {
                 {product.Description}
               </p>
               <p className="text-lg font-bold text-blue-600">
-                Rp {product.Price.toLocaleString("id-ID")}
+                Rp {product.Price ? Number(product.Price).toLocaleString("id-ID") : "0"}
               </p>
               <button
                 className="absolute top-2 right-2 text-red-500 hover:text-red-700"
