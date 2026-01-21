@@ -125,7 +125,7 @@ export default function Home() {
 
       <div className="p-4 md:p-0">
         {/* Products Section */}
-        <section className="py-12 px-8">
+        <section className="py-12 px-4 md:px-8">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-2xl font-bold">Produk</h2>
             <a
@@ -218,7 +218,7 @@ export default function Home() {
         </section>
 
         {/* Section 1: TOKO ILHAM */}
-        <div className="flex flex-col md:flex-row items-center justify-between mb-16 gap-8 px-8">
+        <div className="flex flex-col md:flex-row items-center justify-between mb-16 gap-8 px-4 md:px-8">
           <div className="md:w-1/2 order-2 md:order-1">
             <h1 className="text-2xl md:text-3xl font-bold mb-4 text-blue-600">TOKO ILHAM</h1>
             <p className="text-base text-gray-700 leading-relaxed text-justify">
@@ -246,7 +246,7 @@ export default function Home() {
         </div>
 
         {/* Section 2: Pelayan */}
-        <div className="flex flex-col md:flex-row items-center justify-between gap-8 mb-16 px-8">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-8 mb-16 px-4 md:px-8">
           <div className="md:w-1/2 flex justify-center order-1">
             <img
               src="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=400&q=80"
@@ -273,7 +273,7 @@ export default function Home() {
         </div>
 
         {/* Location Section */}
-        <section className="bg-white py-12 px-8">
+        <section className="bg-white py-12 px-4 md:px-8">
           <h2 className="text-2xl font-bold mb-6">Lokasi</h2>
           <p className="text-gray-600 mb-4">
             Kunjungi toko kami di alamat berikut:

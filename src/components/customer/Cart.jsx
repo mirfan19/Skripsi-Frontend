@@ -165,86 +165,142 @@ export default function Cart() {
             {/* Cart Items */}
             <div className="lg:w-2/3">
               <div className="bg-white rounded-lg shadow">
-                <div className="p-6">
-                  <table className="w-full">
-                    <thead>
-                      <tr className="border-b">
-                        <th className="text-left">Product</th>
-                        <th className="text-right">Price</th>
-                        <th className="text-center">Quantity</th>
-                        <th className="text-right">Subtotal</th>
-                        <th></th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {cartItems.map((item) => (
-                        <tr key={item.CartID} className="border-b">
-                          <td className="py-4 flex items-center">
-                            <img
-                              src={
-                                item.Product.ImageURL
-                                  ? item.Product.ImageURL.startsWith("http")
-                                    ? item.Product.ImageURL
-                                    : `${STATIC_BASE_URL}${
-                                        item.Product.ImageURL
-                                      }`
-                                  : "/product-placeholder.png"
-                              }
-                              alt={item.Product.ProductName}
-                              className="w-16 h-16 object-cover rounded mr-4"
-                              onError={(e) => {
-                                e.target.onerror = null;
-                                e.target.src = "/product-placeholder.png";
-                              }}
-                            />
-                            <span>{item.Product.ProductName}</span>
-                          </td>
-                          <td className="text-right">
-                            Rp {item.Product.Price.toLocaleString("id-ID")}
-                          </td>
-                          <td className="text-center">
-                            <div className="flex justify-center items-center">
-                              <button
-                                onClick={() =>
-                                  updateQuantity(item.CartID, item.Quantity - 1)
+                <div className="p-0 md:p-6">
+                  {/* Table for larger screens */}
+                  <div className="hidden md:block">
+                    <table className="w-full">
+                      <thead>
+                        <tr className="border-b">
+                          <th className="text-left py-3">Product</th>
+                          <th className="text-right py-3">Price</th>
+                          <th className="text-center py-3">Quantity</th>
+                          <th className="text-right py-3">Subtotal</th>
+                          <th></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {cartItems.map((item) => (
+                          <tr key={item.CartID} className="border-b">
+                            <td className="py-4 flex items-center">
+                              <img
+                                src={
+                                  item.Product.ImageURL
+                                    ? item.Product.ImageURL.startsWith("http")
+                                      ? item.Product.ImageURL
+                                      : `${STATIC_BASE_URL}${item.Product.ImageURL}`
+                                    : "/product-placeholder.png"
                                 }
-                                className="px-2 py-1 bg-gray-100 rounded-l"
-                                disabled={item.Quantity <= 1}
+                                alt={item.Product.ProductName}
+                                className="w-16 h-16 object-cover rounded mr-4"
+                                onError={(e) => {
+                                  e.target.onerror = null;
+                                  e.target.src = "/product-placeholder.png";
+                                }}
+                              />
+                              <span className="font-medium">{item.Product.ProductName}</span>
+                            </td>
+                            <td className="text-right">
+                              Rp {item.Product.Price.toLocaleString("id-ID")}
+                            </td>
+                            <td className="text-center">
+                              <div className="flex justify-center items-center">
+                                <button
+                                  onClick={() => updateQuantity(item.CartID, item.Quantity - 1)}
+                                  className="px-2 py-1 bg-gray-100 rounded-l hover:bg-gray-200"
+                                  disabled={item.Quantity <= 1}
+                                >
+                                  -
+                                </button>
+                                <span className="px-4">{item.Quantity}</span>
+                                <button
+                                  onClick={() => updateQuantity(item.CartID, item.Quantity + 1)}
+                                  className="px-2 py-1 bg-gray-100 rounded-r hover:bg-gray-200"
+                                  disabled={item.Quantity >= item.Product.StockQuantity}
+                                >
+                                  +
+                                </button>
+                              </div>
+                            </td>
+                            <td className="text-right font-semibold">
+                              Rp {(item.Product.Price * item.Quantity).toLocaleString("id-ID")}
+                            </td>
+                            <td className="text-right pr-2">
+                              <button
+                                onClick={() => removeItem(item.CartID)}
+                                className="text-red-500 hover:text-red-700 transition-colors"
                               >
-                                -
+                                <FaTimes />
                               </button>
-                              <span className="px-4">{item.Quantity}</span>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+
+                  {/* Cards for mobile screens */}
+                  <div className="md:hidden divide-y divide-gray-100">
+                    {cartItems.map((item) => (
+                      <div key={item.CartID} className="p-4 flex flex-col space-y-3">
+                        <div className="flex items-start">
+                          <img
+                            src={
+                              item.Product.ImageURL
+                                ? item.Product.ImageURL.startsWith("http")
+                                  ? item.Product.ImageURL
+                                  : `${STATIC_BASE_URL}${item.Product.ImageURL}`
+                                : "/product-placeholder.png"
+                            }
+                            alt={item.Product.ProductName}
+                            className="w-20 h-20 object-cover rounded shadow-sm mr-4"
+                            onError={(e) => {
+                              e.target.onerror = null;
+                              e.target.src = "/product-placeholder.png";
+                            }}
+                          />
+                          <div className="flex-1 min-w-0">
+                            <div className="flex justify-between">
+                              <h3 className="font-bold text-gray-900 truncate pr-2">{item.Product.ProductName}</h3>
                               <button
-                                onClick={() =>
-                                  updateQuantity(item.CartID, item.Quantity + 1)
-                                }
-                                className="px-2 py-1 bg-gray-100 rounded-r"
-                                disabled={
-                                  item.Quantity >= item.Product.StockQuantity
-                                }
+                                onClick={() => removeItem(item.CartID)}
+                                className="text-gray-400 hover:text-red-500"
                               >
-                                +
+                                <FaTimes />
                               </button>
                             </div>
-                          </td>
-                          <td className="text-right">
-                            Rp{" "}
-                            {(
-                              item.Product.Price * item.Quantity
-                            ).toLocaleString("id-ID")}
-                          </td>
-                          <td className="text-right">
+                            <p className="text-sm text-blue-600 font-bold mt-1">
+                              Rp {item.Product.Price.toLocaleString("id-ID")}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center border rounded-lg overflow-hidden">
                             <button
-                              onClick={() => removeItem(item.CartID)}
-                              className="text-red-500 hover:text-red-700"
+                              onClick={() => updateQuantity(item.CartID, item.Quantity - 1)}
+                              className="px-3 py-1 bg-gray-50 text-gray-600 active:bg-gray-200"
+                              disabled={item.Quantity <= 1}
                             >
-                              <FaTimes />
+                              -
                             </button>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                            <span className="px-4 py-1 font-medium">{item.Quantity}</span>
+                            <button
+                              onClick={() => updateQuantity(item.CartID, item.Quantity + 1)}
+                              className="px-3 py-1 bg-gray-50 text-gray-600 active:bg-gray-200"
+                              disabled={item.Quantity >= item.Product.StockQuantity}
+                            >
+                              +
+                            </button>
+                          </div>
+                          <div className="text-right">
+                            <p className="text-xs text-gray-500">Subtotal</p>
+                            <p className="font-black text-gray-900">
+                              Rp {(item.Product.Price * item.Quantity).toLocaleString("id-ID")}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>

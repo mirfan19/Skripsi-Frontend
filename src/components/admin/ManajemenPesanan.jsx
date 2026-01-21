@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import api from "../../api/axios";
 import AdminSidebar from "./AdminSidebar";
+import { FaSearch, FaEye } from "react-icons/fa";
 
 export default function ManajemenPesanan() {
   const [orders, setOrders] = useState([]);
@@ -64,23 +65,24 @@ export default function ManajemenPesanan() {
       <AdminSidebar />
 
       {/* Main Content */}
-      <div className="flex-1 p-4 md:p-8 md:ml-64 mt-14 md:mt-0">
+      <div className="flex-1 p-4 md:p-8 md:ml-64 mt-16 md:mt-0">
         <div className="bg-white rounded-lg shadow-lg p-6">
-          <div className="flex justify-between items-center mb-6">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 space-y-4 md:space-y-0">
             <h1 className="text-2xl font-bold">Manajemen Pesanan</h1>
-            <form onSubmit={handleSearch} className="flex items-center">
+            <form onSubmit={handleSearch} className="flex items-center w-full md:w-auto">
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Cari pesanan..."
-                className="px-4 py-2 border rounded-l focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="flex-1 md:w-64 px-4 py-2 border rounded-l focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
               <button
                 type="submit"
-                className="px-4 py-2 bg-blue-600 text-white rounded-r hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="px-4 py-2 bg-blue-600 text-white rounded-r hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 flex items-center justify-center shadow-md active:scale-95"
+                title="Cari"
               >
-                Cari
+                <FaSearch />
               </button>
             </form>
           </div>
@@ -91,8 +93,8 @@ export default function ManajemenPesanan() {
             </div>
           )}
 
-          <div className="overflow-x-auto">
-            <table className="min-w-full">
+          <div className="overflow-x-auto -mx-6 md:mx-0">
+            <table className="min-w-[600px] md:min-w-full">
               <thead className="bg-blue-600 text-white">
                 <tr>
                   <th className="px-6 py-3 text-left text-sm font-semibold">
@@ -134,12 +136,13 @@ export default function ManajemenPesanan() {
                       </span>
                     </td>
                     <td className="px-6 py-4 text-center">
-                      <button
-                        onClick={() => handleDetail(order.OrderID)}
-                        className="text-blue-600 hover:text-blue-800 mx-2"
-                      >
-                        Detail
-                      </button>
+                        <button
+                          onClick={() => handleDetail(order.OrderID)}
+                          className="p-2 text-blue-600 hover:bg-blue-50 rounded-full transition-colors inline-flex items-center"
+                          title="Detail Pesanan"
+                        >
+                          <FaEye size={18} />
+                        </button>
                     </td>
                   </tr>
                 ))}

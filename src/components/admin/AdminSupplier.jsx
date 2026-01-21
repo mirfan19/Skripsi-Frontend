@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "../../api/axios";
 import AdminSidebar from "./AdminSidebar";
+import { FaTrash, FaPlus } from "react-icons/fa";
 
 const AdminSupplier = () => {
   const [suppliers, setSuppliers] = useState([]);
@@ -66,7 +67,7 @@ const AdminSupplier = () => {
   return (
     <div className="flex min-h-screen bg-gray-100">
       <AdminSidebar />
-      <div className="flex-1 p-4 md:p-8 md:ml-64 mt-14 md:mt-0">
+      <div className="flex-1 p-4 md:p-8 md:ml-64 mt-16 md:mt-0">
         <h2 className="text-xl font-bold mb-4">Manajemen Supplier</h2>
         <form
           onSubmit={handleAddSupplier}
@@ -94,43 +95,47 @@ const AdminSupplier = () => {
           </div>
           <button
             type="submit"
-            className="bg-blue-600 text-white px-4 py-2 rounded"
+            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors shadow-sm active:scale-95 flex items-center gap-2"
           >
-            Tambah Supplier
+            <FaPlus size={14} />
+            <span>Tambah Supplier</span>
           </button>
         </form>
         {error && <div className="text-red-600 mb-2">{error}</div>}
         {success && <div className="text-green-600 mb-2">{success}</div>}
-        <div className="bg-white p-4 rounded shadow">
+        <div className="bg-white p-4 rounded shadow overflow-hidden">
           <h3 className="font-semibold mb-2">Daftar Supplier</h3>
           {loading ? (
             <div>Loading...</div>
           ) : (
-            <table className="w-full border">
-              <thead>
-                <tr>
-                  <th className="border px-2 py-1">Nama</th>
-                  <th className="border px-2 py-1">Alamat</th>
-                  <th className="border px-2 py-1">Aksi</th>
-                </tr>
-              </thead>
-              <tbody>
-                {suppliers.map((s) => (
-                  <tr key={s.SupplierID}>
-                    <td className="border px-2 py-1">{s.SupplierName}</td>
-                    <td className="border px-2 py-1">{s.Address}</td>
-                    <td className="border px-2 py-1">
-                      <button
-                        onClick={() => handleDelete(s.SupplierID)}
-                        className="bg-red-500 text-white px-2 py-1 rounded"
-                      >
-                        Hapus
-                      </button>
-                    </td>
+            <div className="overflow-x-auto">
+              <table className="w-full border min-w-[500px]">
+                <thead>
+                  <tr>
+                    <th className="border px-2 py-1">Nama</th>
+                    <th className="border px-2 py-1">Alamat</th>
+                    <th className="border px-2 py-1">Aksi</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {suppliers.map((s) => (
+                    <tr key={s.SupplierID}>
+                      <td className="border px-2 py-1">{s.SupplierName}</td>
+                      <td className="border px-2 py-1">{s.Address}</td>
+                      <td className="border px-2 py-1 text-center">
+                        <button
+                          onClick={() => handleDelete(s.SupplierID)}
+                          className="p-2 text-red-600 hover:bg-red-50 rounded-full transition-colors"
+                          title="Hapus Supplier"
+                        >
+                          <FaTrash size={16} />
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           )}
         </div>
       </div>

@@ -220,45 +220,52 @@ export default function Profile() {
           {orderHistory.length > 0 && (
             <div className="mt-10">
               <h2 className="text-xl font-bold mb-4">Riwayat Pesanan</h2>
-              <table className="min-w-full bg-white rounded shadow">
-                <thead>
-                  <tr>
-                    <th className="px-4 py-2">Order ID</th>
-                    <th className="px-4 py-2">Tanggal</th>
-                    <th className="px-4 py-2">Total</th>
-                    <th className="px-4 py-2">Status</th>
-                    <th className="px-4 py-2">Detail Produk</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {orderHistory.map((order) => (
-                    <tr key={order.OrderID} className="align-top">
-                      <td className="px-4 py-2">#{order.OrderID}</td>
-                      <td className="px-4 py-2">
-                        {new Date(order.OrderDate).toLocaleDateString()}
-                      </td>
-                      <td className="px-4 py-2">
-                        Rp {order.TotalAmount?.toLocaleString("id-ID")}
-                      </td>
-                      <td className="px-4 py-2">{order.Status}</td>
-                      <td className="px-4 py-2">
-                        <ul className="list-disc pl-4">
-                          {order.OrderItems && order.OrderItems.length > 0 ? (
-                            order.OrderItems.map((item) => (
-                              <li key={item.OrderItemID}>
-                                {item.Product?.ProductName} x {item.Quantity} @
-                                Rp. {Number(item.Price).toLocaleString("id-ID")}
-                              </li>
-                            ))
-                          ) : (
-                            <li>Tidak ada produk</li>
-                          )}
-                        </ul>
-                      </td>
+              <div className="overflow-x-auto">
+                <table className="min-w-full bg-white rounded shadow text-sm md:text-base">
+                  <thead>
+                    <tr>
+                      <th className="px-4 py-2 text-left">Order ID</th>
+                      <th className="px-4 py-2 text-left">Tanggal</th>
+                      <th className="px-4 py-2 text-right">Total</th>
+                      <th className="px-4 py-2 text-left">Status</th>
+                      <th className="px-4 py-2 text-left">Detail Produk</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {orderHistory.map((order) => (
+                      <tr key={order.OrderID} className="align-top border-t">
+                        <td className="px-4 py-2 font-medium">#{order.OrderID}</td>
+                        <td className="px-4 py-2 whitespace-nowrap">
+                          {new Date(order.OrderDate).toLocaleDateString()}
+                        </td>
+                        <td className="px-4 py-2 text-right">
+                          Rp {order.TotalAmount?.toLocaleString("id-ID")}
+                        </td>
+                        <td className="px-4 py-2">
+                          <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${
+                            order.Status === 'Selesai' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
+                          }`}>
+                            {order.Status}
+                          </span>
+                        </td>
+                        <td className="px-4 py-2 min-w-[200px]">
+                          <ul className="list-disc pl-4 space-y-1">
+                            {order.OrderItems && order.OrderItems.length > 0 ? (
+                              order.OrderItems.map((item) => (
+                                <li key={item.OrderItemID} className="text-xs">
+                                  {item.Product?.ProductName} <span className="text-gray-500 text-[10px] ml-1">x{item.Quantity}</span>
+                                </li>
+                              ))
+                            ) : (
+                              <li className="text-xs">Tidak ada produk</li>
+                            )}
+                          </ul>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
           )}
         </div>

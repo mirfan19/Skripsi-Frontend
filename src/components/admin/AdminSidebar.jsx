@@ -24,13 +24,16 @@ export default function AdminSidebar() {
 
   return (
     <>
-      {/* Mobile Toggle Button */}
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="fixed top-4 left-4 z-50 p-2 bg-blue-600 text-white rounded-md md:hidden shadow-lg"
-      >
-        {isOpen ? <FaTimes size={20} /> : <FaBars size={20} />}
-      </button>
+      {/* Mobile Top Bar */}
+      <div className="md:hidden fixed top-0 left-0 right-0 h-16 bg-blue-600 text-white flex items-center px-4 z-50 shadow-md">
+        <button
+          onClick={() => setIsOpen(!isOpen)}
+          className="p-2 hover:bg-blue-700 rounded-md transition-colors"
+        >
+          {isOpen ? <FaTimes size={20} /> : <FaBars size={20} />}
+        </button>
+        <h1 className="ml-4 font-bold text-lg tracking-tight">Admin Toko Ilham</h1>
+      </div>
 
       {/* Overlay for mobile */}
       {isOpen && (

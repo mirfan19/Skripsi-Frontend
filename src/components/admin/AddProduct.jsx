@@ -97,10 +97,9 @@ export default function AddProduct() {
     <div className="min-h-screen bg-gray-100 flex">
       <AdminSidebar />
 
-      <main className="flex-1 md:ml-64 p-4 md:p-8 mt-14 md:mt-0">
+      <main className="flex-1 md:ml-64 p-4 md:p-8 mt-16 md:mt-0">
         <div className="max-w-2xl mx-auto">
           <h1 className="text-2xl font-bold mb-6">Tambah Produk Baru</h1>
-
           <form
             onSubmit={handleSubmit}
             className="bg-white rounded-lg shadow p-6"

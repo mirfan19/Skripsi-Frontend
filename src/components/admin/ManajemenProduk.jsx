@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import api, { STATIC_BASE_URL } from "../../api/axios";
 import AdminSidebar from "./AdminSidebar";
+import { FaEdit, FaTrash, FaPlus } from "react-icons/fa";
 
 export default function ManajemenProduk() {
   const [products, setProducts] = useState([]);
@@ -58,14 +59,15 @@ export default function ManajemenProduk() {
     <div className="min-h-screen bg-gray-100 flex">
       <AdminSidebar />
 
-      <main className="flex-1 md:ml-64 p-4 md:p-8 mt-14 md:mt-0">
-        <div className="flex justify-between items-center mb-6">
+      <main className="flex-1 md:ml-64 p-4 md:p-8 mt-16 md:mt-0 transition-all duration-300">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 space-y-4 md:space-y-0">
           <h1 className="text-2xl font-bold">Manajemen Produk</h1>
           <button
             onClick={() => navigate("/admin/products/add")}
-            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+            className="w-full md:w-auto bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors shadow-sm active:scale-95 flex items-center justify-center gap-2"
           >
-            Tambah Produk
+            <FaPlus />
+            <span>Tambah Produk</span>
           </button>
         </div>
 
@@ -79,8 +81,8 @@ export default function ManajemenProduk() {
           </div>
         ) : (
           <div className="bg-white rounded-lg shadow overflow-hidden">
-            <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
+            <div className="overflow-x-auto -mx-4 md:mx-0">
+              <table className="min-w-[600px] md:min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-50">
                   <tr>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -135,15 +137,17 @@ export default function ManajemenProduk() {
                           onClick={() =>
                             navigate(`/admin/products/edit/${product.ProductID}`)
                           }
-                          className="text-blue-600 hover:text-blue-800 mr-4"
+                          className="p-2 text-blue-600 hover:bg-blue-50 rounded-full transition-colors"
+                          title="Edit"
                         >
-                          Edit
+                          <FaEdit size={18} />
                         </button>
                         <button
                           onClick={() => handleDeleteClick(product.ProductID)}
-                          className="text-red-600 hover:text-red-800"
+                          className="p-2 text-red-600 hover:bg-red-50 rounded-full transition-colors"
+                          title="Hapus"
                         >
-                          Hapus
+                          <FaTrash size={18} />
                         </button>
                       </td>
                     </tr>

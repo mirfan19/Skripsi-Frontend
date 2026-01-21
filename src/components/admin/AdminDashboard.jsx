@@ -108,10 +108,10 @@ export default function AdminDashboard() {
   return (
     <div className="flex min-h-screen bg-gray-50">
       <AdminSidebar />
-      <main className="flex-1 p-4 md:p-8 md:ml-64 mt-12 md:mt-0 transition-all duration-300">
-        <div className="flex flex-col md:flex-row md:items-center justify-between mb-8">
+      <main className="flex-1 md:ml-64 p-4 md:p-8 mt-16 md:mt-0 transition-all duration-300">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 space-y-4 md:space-y-0">
           <div>
-            <h1 className="text-3xl font-extrabold text-gray-800">Operational Dashboard</h1>
+            <h2 className="text-2xl font-black text-gray-800 tracking-tight">Operational Dashboard</h2>
             <p className="text-gray-600 mt-1">Real-time monitoring and database insights</p>
           </div>
           <div className="mt-4 md:mt-0 flex gap-2">
@@ -225,8 +225,8 @@ export default function AdminDashboard() {
                 Lihat Semua <FaArrowRight className="ml-1" />
               </Link>
             </div>
-            <div className="overflow-x-auto">
-              <table className="w-full text-left">
+            <div className="overflow-x-auto -mx-5 md:mx-0">
+              <table className="min-w-full text-left">
                 <thead className="bg-gray-50 text-gray-500 uppercase text-xs font-bold">
                   <tr>
                     <th className="px-6 py-4">ID Pesanan</th>

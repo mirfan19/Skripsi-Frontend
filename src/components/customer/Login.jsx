@@ -41,7 +41,7 @@ export default function Login() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <motion.div
-        className="flex w-full max-w-4xl bg-white rounded-lg overflow-hidden shadow-lg"
+        className="flex flex-col md:flex-row w-full max-w-4xl bg-white rounded-lg overflow-hidden shadow-lg mx-4"
         initial={{ opacity: 0, x: -100 }}
         animate={{ opacity: 1, x: 0 }}
         exit={{ opacity: 0, x: 100 }}
@@ -49,16 +49,16 @@ export default function Login() {
       >
         {/* Left - Image */}
         <motion.div
-          className="w-1/2 bg-gray-100 flex items-center justify-center p-4"
+          className="md:w-1/2 bg-gray-100 flex items-center justify-center p-8"
           initial={{ x: -100 }}
           animate={{ x: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <img src="/Toko Ilham Logo.png" alt="Logo" className="w-3/4" />
+          <img src="/Toko Ilham Logo.png" alt="Logo" className="w-1/2 md:w-3/4" />
         </motion.div>
 
         {/* Right - Form */}
-        <div className="w-1/2 p-8">
+        <div className="md:w-1/2 p-6 md:p-8">
           <h1 className="text-2xl font-bold mb-6 text-center">TOKO ILHAM</h1>
           <p className="mb-4 text-lg font-semibold text-center">
             Toko Serba Ada, Fotocopy, dan Alat Tulis Kantor
