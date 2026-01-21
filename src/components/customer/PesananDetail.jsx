@@ -15,7 +15,7 @@ export default function PesananDetail() {
       try {
         setLoading(true);
         const res = await api.get(`/orders/${orderId}`);
-        setOrder(res.data);
+        setOrder(res.data.data);
       } catch (err) {
         setError("Gagal memuat detail pesanan");
       } finally {
@@ -27,8 +27,10 @@ export default function PesananDetail() {
 
   const updateStatus = async (status) => {
     try {
-      await api.put(`/orders/${orderId}`, { status });
-      setOrder({ ...order, Status: status });
+      const res = await api.put(`/orders/${orderId}`, { status });
+      if (res.data.success) {
+        setOrder(res.data.data);
+      }
     } catch (err) {
       setError("Gagal memperbarui status pesanan");
     }

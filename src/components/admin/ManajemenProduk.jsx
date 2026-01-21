@@ -14,7 +14,7 @@ export default function ManajemenProduk() {
   // Fetch products
   const fetchProducts = async () => {
     try {
-      const response = await api.get("/admin/products");
+      const response = await api.get("admin/products");
       setProducts(response.data.data);
       setLoading(false);
     } catch (error) {
@@ -36,7 +36,7 @@ export default function ManajemenProduk() {
 
   const handleConfirmDelete = async () => {
     try {
-      await api.delete(`/admin/products/${productToDelete}`);
+      await api.delete(`admin/products/${productToDelete}`);
       setShowConfirmDelete(false);
       setProductToDelete(null);
       // Refresh the product list

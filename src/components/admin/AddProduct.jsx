@@ -21,7 +21,7 @@ export default function AddProduct() {
   useEffect(() => {
     const fetchSuppliers = async () => {
       try {
-        const response = await api.get("/suppliers");
+        const response = await api.get("suppliers");
         console.log("Suppliers fetched:", response.data);
         setSuppliers(response.data);
       } catch (error) {
@@ -71,7 +71,7 @@ export default function AddProduct() {
         console.log(pair[0] + ": " + pair[1]);
       }
 
-      const response = await api.post("/admin/products", formDataToSend, {
+      const response = await api.post("admin/products", formDataToSend, {
         headers: {
           "Content-Type": "multipart/form-data",
         },

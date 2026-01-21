@@ -26,7 +26,7 @@ export default function EditProduct() {
         // Fetch product data
         try {
           console.log('Fetching product with ID:', id);
-          const productResponse = await api.get(`/admin/products/${id}`);
+          const productResponse = await api.get(`admin/products/${id}`);
           console.log('Product response:', productResponse.data);
 
           const product = productResponse.data?.data;
@@ -58,7 +58,7 @@ export default function EditProduct() {
         // Fetch supplier data
         try {
           console.log('Fetching suppliers...');
-          const supplierResponse = await api.get("/admin/suppliers");
+          const supplierResponse = await api.get("admin/suppliers");
           console.log('Suppliers response:', supplierResponse.data);
           setSuppliers(supplierResponse.data);
         } catch (supplierError) {
@@ -146,7 +146,7 @@ export default function EditProduct() {
         image: formData.Image ? formData.Image.name : "No new image",
       });
 
-      const response = await api.put(`/admin/products/${id}`, formDataToSend, {
+      const response = await api.put(`admin/products/${id}`, formDataToSend, {
         headers: {
           "Content-Type": "multipart/form-data",
         },

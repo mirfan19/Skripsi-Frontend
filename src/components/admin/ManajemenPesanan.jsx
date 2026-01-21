@@ -13,7 +13,7 @@ export default function ManajemenPesanan() {
   const fetchOrders = useCallback(async () => {
     try {
       setLoading(true);
-      const response = await api.get("/orders", {
+      const response = await api.get("orders", {
         params: {
           search: searchQuery,
         },
@@ -41,7 +41,7 @@ export default function ManajemenPesanan() {
 
   const handleStatusUpdate = async (orderId, newStatus) => {
     try {
-      await api.put(`/orders/${orderId}`, { status: newStatus });
+      await api.put(`orders/${orderId}`, { status: newStatus });
       fetchOrders(); // Refresh orders after status update
     } catch (error) {
       console.error("Error updating order status:", error);

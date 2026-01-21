@@ -20,7 +20,6 @@ export default function AdminSidebar() {
     { to: "/admin/products", label: "Manajemen Produk", icon: <FaBox /> },
     { to: "/admin/suppliers", label: "Manajemen Supplier", icon: <FaUserTie /> },
     { to: "/admin/orders", label: "Manajemen Pesanan", icon: <FaShoppingCart /> },
-    { to: "/admin/reports", label: "Laporan Keuangan", icon: <FaChartBar /> },
   ];
 
   return (

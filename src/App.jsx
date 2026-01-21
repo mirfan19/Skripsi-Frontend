@@ -29,7 +29,6 @@ import ManajemenProduk from "./components/admin/ManajemenProduk";
 import AddProduct from "./components/admin/AddProduct";
 import EditProduct from "./components/admin/EditProduct";
 import ManajemenPesanan from "./components/admin/ManajemenPesanan";
-import ManajemenReport from "./components/admin/ManajemenReport";
 import AdminSupplier from "./components/admin/AdminSupplier";
 
 function AnimatedRoutes() {
@@ -81,7 +80,6 @@ function AnimatedRoutes() {
                 <Route path="/orders" element={<ManajemenPesanan />} />
                 <Route path="/orders/:orderId" element={<PesananDetail />} />
                 <Route path="/suppliers" element={<AdminSupplier />} />
-                <Route path="/reports" element={<ManajemenReport />} />
               </Routes>
             </ProtectedRoute>
           }

@@ -14,7 +14,7 @@ export default function ProfileOrderDetail() {
       try {
         setLoading(true);
         const res = await api.get(`/orders/${orderId}`);
-        setOrder(res.data);
+        setOrder(res.data.data);
       } catch (err) {
         setError("Gagal memuat detail pesanan");
       } finally {

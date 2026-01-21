@@ -14,7 +14,7 @@ const AdminSupplier = () => {
   const fetchSuppliers = async () => {
     setLoading(true);
     try {
-      const res = await axios.get("/suppliers");
+      const res = await axios.get("suppliers");
       setSuppliers(res.data);
     } catch (err) {
       setError("Gagal mengambil data supplier");
@@ -33,7 +33,7 @@ const AdminSupplier = () => {
     setSuccess("");
     try {
       // Sesuaikan payload dengan field backend
-      await axios.post("/suppliers", {
+      await axios.post("suppliers", {
         SupplierName: supplierName,
         Address: address,
         ContactName: "-", // atau bisa tambahkan input jika ingin
@@ -55,7 +55,7 @@ const AdminSupplier = () => {
     setError("");
     setSuccess("");
     try {
-      await axios.delete(`/suppliers/${id}`);
+      await axios.delete(`suppliers/${id}`);
       setSuccess("Supplier berhasil dihapus");
       fetchSuppliers();
     } catch (err) {

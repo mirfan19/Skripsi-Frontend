@@ -15,6 +15,27 @@ export default function Checkout() {
     additionalInfo: "",
   });
 
+  const fetchUserProfile = async () => {
+    try {
+      const userId = localStorage.getItem("userId");
+      if (!userId) return;
+
+      const response = await api.get(`/users/${userId}`);
+      if (response.data) {
+        const userData = response.data;
+        setFormData((prev) => ({
+          ...prev,
+          name: userData.Username || "",
+          email: userData.Email || "",
+          phone: userData.Phone || "",
+          address: userData.Address || "",
+        }));
+      }
+    } catch (error) {
+      console.error("Error fetching user profile:", error);
+    }
+  };
+
   const fetchCartItems = async () => {
     try {
       const userId = localStorage.getItem("userId");
@@ -35,6 +56,7 @@ export default function Checkout() {
 
   useEffect(() => {
     fetchCartItems();
+    fetchUserProfile();
   }, []);
 
   const handleInputChange = (e) => {
