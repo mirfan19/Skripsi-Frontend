@@ -156,15 +156,39 @@ export default function Wishlist() {
                   e.target.src = "/product-placeholder.png";
                 }}
               />
-              <h3 className="font-semibold text-lg">
+              
+              {/* Promo Badges */}
+              <div className="absolute top-2 left-2 flex flex-col gap-1">
+                {item.Product.IsFlashSale && (
+                  <span className="bg-red-500 text-white text-xs font-bold px-2 py-1 rounded">FLASH SALE</span>
+                )}
+                {item.Product.DiscountPercentage > 0 && (
+                  <span className="bg-green-500 text-white text-xs font-bold px-2 py-1 rounded">{item.Product.DiscountPercentage}% OFF</span>
+                )}
+                {item.Product.StockQuantity < 5 && item.Product.StockQuantity > 0 && (
+                  <span className="bg-orange-500 text-white text-xs font-bold px-2 py-1 rounded">Low Stock ({item.Product.StockQuantity})</span>
+                )}
+                {item.Product.StockQuantity === 0 && (
+                  <span className="bg-gray-500 text-white text-xs font-bold px-2 py-1 rounded">Out of Stock</span>
+                )}
+              </div>
+
+              <h3 className="font-semibold text-lg line-clamp-1">
                 {item.Product.ProductName}
               </h3>
-              <p className="text-sm text-gray-600 mb-2">
+              <p className="text-sm text-gray-600 mb-2 line-clamp-2 min-h-[40px]">
                 {item.Product.Description}
               </p>
-              <p className="text-lg font-bold text-blue-600">
-                Rp {item.Product.Price.toLocaleString("id-ID")}
-              </p>
+              <div className="flex flex-col mt-auto">
+                {item.Product.PreviousPrice && parseFloat(item.Product.PreviousPrice) > parseFloat(item.Product.Price) && (
+                  <p className="text-sm text-gray-400 line-through">
+                    Rp {parseFloat(item.Product.PreviousPrice).toLocaleString("id-ID")}
+                  </p>
+                )}
+                <p className="text-lg font-bold text-blue-600">
+                  Rp {parseFloat(item.Product.Price).toLocaleString("id-ID")}
+                </p>
+              </div>
             </div>
           ))}
         </div>

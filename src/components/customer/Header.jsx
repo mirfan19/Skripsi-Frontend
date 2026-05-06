@@ -1,19 +1,54 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { FaUser, FaHeart, FaShoppingCart, FaBars, FaTimes } from "react-icons/fa";
+import { FaUser, FaHeart, FaShoppingCart, FaBars, FaTimes, FaBell, FaCircle } from "react-icons/fa";
+import axios from "axios";
 
 export default function Header({ onSearch }) {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isNotificationOpen, setIsNotificationOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [notifications, setNotifications] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
     const token = localStorage.getItem("token");
     const userId = localStorage.getItem("userId");
     setIsLoggedIn(!!(token && userId));
+
+    if (token && userId) {
+      fetchNotifications(userId);
+    }
   }, []);
+
+  const fetchNotifications = async (userId) => {
+    try {
+      const response = await axios.get(`http://localhost:3000/api/v1/notifications/${userId}`);
+      if (response.data && response.data.success) {
+        setNotifications(response.data.data);
+      }
+    } catch (error) {
+      console.error("Failed to fetch notifications", error);
+    }
+  };
+
+  const markAsRead = async (id, productId) => {
+    try {
+      await axios.put(`http://localhost:3000/api/v1/notifications/${id}/read`);
+      setNotifications(notifications.map(n => n.NotificationID === id ? { ...n, IsRead: true } : n));
+      setIsNotificationOpen(false);
+      if (productId) {
+        navigate(`/products/${productId}`);
+      } else {
+        navigate("/wishlist");
+      }
+    } catch (error) {
+      console.error("Failed to mark as read", error);
+    }
+  };
+
+  const unreadCount = notifications.filter(n => !n.IsRead).length;
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -28,6 +63,12 @@ export default function Header({ onSearch }) {
 
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
+    setIsNotificationOpen(false);
+  };
+
+  const toggleNotification = () => {
+    setIsNotificationOpen(!isNotificationOpen);
+    setIsDropdownOpen(false);
   };
 
   const handleSearch = (e) => {
@@ -38,14 +79,17 @@ export default function Header({ onSearch }) {
   };
 
   useEffect(() => {
-    const closeDropdown = (e) => {
+    const closeDropdowns = (e) => {
       if (!e.target.closest(".user-menu")) {
         setIsDropdownOpen(false);
       }
+      if (!e.target.closest(".notification-menu")) {
+        setIsNotificationOpen(false);
+      }
     };
 
-    document.addEventListener("click", closeDropdown);
-    return () => document.removeEventListener("click", closeDropdown);
+    document.addEventListener("click", closeDropdowns);
+    return () => document.removeEventListener("click", closeDropdowns);
   }, []);
 
   return (
@@ -95,6 +139,58 @@ export default function Header({ onSearch }) {
                   <Link to="/cart" className="hover:text-gray-200 transition-colors">
                     <FaShoppingCart className="text-xl" />
                   </Link>
+                  
+                  {/* Notification Dropdown */}
+                  <div className="relative notification-menu">
+                    <button
+                      onClick={toggleNotification}
+                      className="hover:text-gray-200 flex items-center transition-colors px-1 relative"
+                    >
+                      <FaBell className="text-xl" />
+                      {unreadCount > 0 && (
+                        <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold px-1.5 py-0.5 rounded-full">
+                          {unreadCount}
+                        </span>
+                      )}
+                    </button>
+                    {isNotificationOpen && (
+                      <div className="absolute right-0 mt-2 w-80 bg-white rounded-md shadow-lg py-1 z-50 ring-1 ring-black ring-opacity-5 max-h-96 overflow-y-auto">
+                        <div className="px-4 py-2 border-b border-gray-100 flex justify-between items-center">
+                          <h3 className="font-bold text-gray-800">Notifications</h3>
+                        </div>
+                        {notifications.length === 0 ? (
+                          <div className="px-4 py-4 text-sm text-gray-500 text-center">No notifications</div>
+                        ) : (
+                          notifications.map((notif) => (
+                            <button
+                              key={notif.NotificationID}
+                              onClick={() => markAsRead(notif.NotificationID, notif.ProductID)}
+                              className={`w-full text-left px-4 py-3 border-b border-gray-50 hover:bg-gray-50 flex items-start space-x-3 transition-colors ${!notif.IsRead ? 'bg-blue-50/30' : ''}`}
+                            >
+                              <div className="flex-shrink-0 mt-1">
+                                {notif.Type === 'price_drop' && <span className="text-green-500 text-lg">💰</span>}
+                                {notif.Type === 'promo' && <span className="text-red-500 text-lg">🔥</span>}
+                                {notif.Type === 'low_stock' && <span className="text-orange-500 text-lg">⚠️</span>}
+                              </div>
+                              <div className="flex-1">
+                                <p className={`text-sm ${!notif.IsRead ? 'text-gray-900 font-medium' : 'text-gray-600'}`}>
+                                  {notif.Message}
+                                </p>
+                                <p className="text-xs text-gray-400 mt-1">
+                                  {new Date(notif.createdAt).toLocaleDateString()}
+                                </p>
+                              </div>
+                              {!notif.IsRead && (
+                                <FaCircle className="text-blue-500 text-[8px] mt-2 flex-shrink-0" />
+                              )}
+                            </button>
+                          ))
+                        )}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* User Menu Dropdown */}
                   <div className="relative user-menu">
                     <button
                       onClick={toggleDropdown}
@@ -135,9 +231,45 @@ export default function Header({ onSearch }) {
             {/* Mobile Menu Buttons */}
             <div className="md:hidden flex items-center space-x-4">
               {isLoggedIn && (
-                <Link to="/cart" className="hover:text-gray-200 relative">
-                  <FaShoppingCart className="text-xl" />
-                </Link>
+                <>
+                  <div className="relative notification-menu">
+                    <button onClick={toggleNotification} className="hover:text-gray-200 relative">
+                      <FaBell className="text-xl" />
+                      {unreadCount > 0 && (
+                        <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold px-1.5 py-0.5 rounded-full">
+                          {unreadCount}
+                        </span>
+                      )}
+                    </button>
+                    {isNotificationOpen && (
+                      <div className="absolute right-0 mt-2 w-72 bg-white rounded-md shadow-lg py-1 z-50 ring-1 ring-black ring-opacity-5 max-h-80 overflow-y-auto">
+                        <div className="px-4 py-2 border-b border-gray-100">
+                          <h3 className="font-bold text-gray-800">Notifications</h3>
+                        </div>
+                        {notifications.length === 0 ? (
+                          <div className="px-4 py-4 text-sm text-gray-500 text-center">No notifications</div>
+                        ) : (
+                          notifications.map((notif) => (
+                            <button
+                              key={notif.NotificationID}
+                              onClick={() => markAsRead(notif.NotificationID, notif.ProductID)}
+                              className={`w-full text-left px-4 py-3 border-b border-gray-50 flex items-start space-x-3 ${!notif.IsRead ? 'bg-blue-50/30' : ''}`}
+                            >
+                              <div className="flex-1">
+                                <p className={`text-sm ${!notif.IsRead ? 'text-gray-900 font-medium' : 'text-gray-600'}`}>
+                                  {notif.Message}
+                                </p>
+                              </div>
+                            </button>
+                          ))
+                        )}
+                      </div>
+                    )}
+                  </div>
+                  <Link to="/cart" className="hover:text-gray-200 relative">
+                    <FaShoppingCart className="text-xl" />
+                  </Link>
+                </>
               )}
               <button
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
