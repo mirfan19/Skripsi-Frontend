@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FaUser, FaHeart, FaShoppingCart, FaBars, FaTimes, FaBell, FaCircle } from "react-icons/fa";
-import axios from "axios";
+import api from "../../api/axios";
 
 export default function Header({ onSearch }) {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -24,7 +24,7 @@ export default function Header({ onSearch }) {
 
   const fetchNotifications = async (userId) => {
     try {
-      const response = await axios.get(`http://localhost:3000/api/v1/notifications/${userId}`);
+      const response = await api.get(`/notifications/${userId}`);
       if (response.data && response.data.success) {
         setNotifications(response.data.data);
       }
@@ -35,7 +35,7 @@ export default function Header({ onSearch }) {
 
   const markAsRead = async (id, productId) => {
     try {
-      await axios.put(`http://localhost:3000/api/v1/notifications/${id}/read`);
+      await api.put(`/notifications/${id}/read`);
       setNotifications(notifications.map(n => n.NotificationID === id ? { ...n, IsRead: true } : n));
       setIsNotificationOpen(false);
       if (productId) {

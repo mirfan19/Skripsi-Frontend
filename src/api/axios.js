@@ -3,8 +3,8 @@
 console.log("VITE_API_URL:", import.meta.env.VITE_API_URL);
 import axios from "axios";
 
-// Use environment variable or fallback to localhost
-const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api/v1').replace(/\/+$/, '') + '/';
+// Use environment variable or fallback to relative path if not specified
+const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || '/api/v1').replace(/\/+$/, '') + '/';
 
 // Derive static base URL (strip /api/v1 or /api)
 // This ensures that images can be fetched from the root of the backend
